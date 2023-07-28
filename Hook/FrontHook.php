@@ -87,7 +87,7 @@ class FrontHook extends BaseHook
                 "site-review.html",
                 [
                     "site_reviews" => $siteReviews,
-                    "site_rate" => 4.5
+                    "site_rate" => 4.35
                 ]
             )
         );
