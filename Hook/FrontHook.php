@@ -29,6 +29,10 @@ class FrontHook extends BaseHook
             ConfigQuery::read(GuaranteedOpinion::SITE_REVIEW_HOOK_DISPLAY) => [
                 "type" => "front",
                 "method" => "displaySiteWidget"
+            ],
+            ConfigQuery::read(GuaranteedOpinion::PRODUCT_REVIEW_HOOK_DISPLAY) => [
+                "type" => "front",
+                "method" => "displayProductWidget"
             ]
         ];
     }
@@ -84,13 +88,33 @@ class FrontHook extends BaseHook
 
         $event->add(
             $this->render(
-                "site-review.html",
+                "site/site-review.html",
                 [
                     "site_reviews" => $siteReviews,
                     "site_rate" => 4.35
                 ]
             )
         );
+    }
+
+    public function displayProductWidget(HookRenderEvent $event)
+    {
+//        $display = ConfigQuery::read(GuaranteedOpinion::PRODUCT_REVIEW_DISPLAY);
+//        if (!$display) {
+//            return;
+//        }
+//        //todo request sql table to get site reviews
+//        $productReviews = ["bla", "bla"];
+//
+//        $event->add(
+//            $this->render(
+//                "product-review.html",
+//                [
+//                    "product_reviews" => $productReviews,
+//                    "product_rate" => 4.35
+//                ]
+//            )
+//        );
     }
 //
 //    public function displayProductIframe(HookRenderEvent $event)
@@ -120,7 +144,7 @@ class FrontHook extends BaseHook
         $linkTitle = ConfigQuery::read(GuaranteedOpinion::FOOTER_LINK_TITLE);
         $link = ConfigQuery::read(GuaranteedOpinion::FOOTER_LINK);
 
-        $content = $this->render('footer-link.html', [
+        $content = $this->render('site/footer-link.html', [
             'link_title' => $linkTitle,
             'link' => $link
         ]);

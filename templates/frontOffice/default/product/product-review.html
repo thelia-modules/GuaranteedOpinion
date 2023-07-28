@@ -1,0 +1,52 @@
+<style>
+    .guaranteed_opinion_product_rating_total {
+        font-size: 2rem;
+    }
+    .guaranteed_opinion_product_rating_total span {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #000;
+        margin-right: 5px;
+    }
+
+    .guaranteed_opinion_product_container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .guaranteed_opinion_product_rating {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .guaranteed_opinion_product_img {
+        text-align: end;
+    }
+
+    .guaranteed_opinion_product_img img {
+        max-width: 115px;
+    }
+</style>
+
+<div id="guaranteed_opinion_product_site_review" class="guaranteed_opinion_product_container">
+    <div class="guaranteed_opinion_product_img">
+        <a href="https://www.societe-des-avis-garantis.fr/" target="_blank">
+{*                <img src="{getFileFromManifest file='dist/images/steavisgarantis_logo_badge_fr.png'}" alt="{intl l="logo avis garantis"}">*}
+{*                todo: build le dossier des images pour récupérer le logo ici*}
+            <img src="https://www.societe-des-avis-garantis.fr/lpassets/media/icons/cocarde-xl.png" alt="{intl l="logo avis garantis"}">
+        </a>
+    </div>
+
+    <div class="guaranteed_opinion_product_rating">
+        <div class="guaranteed_opinion_product_rating_total">
+            <span>{$site_rate}</span>/5
+        </div>
+        <div class="guaranteed_opinion_product_rating_stars">
+            {include file="includes/stars.html" site_rate=$site_rate}
+        </div>
+        <div class="guaranteed_opinion_product_text_nb">{$site_reviews|count} avis</div>
+    </div>
+
+    <div class="guaranteed_opinion_product_text_legal" style="display: none">{intl l="Avis soumis"}<br />{intl l="à un contrôle"}</div>
+</div>
