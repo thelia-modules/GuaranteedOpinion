@@ -1,0 +1,25 @@
+{$max = $max|default: 5}
+{if $value}
+    <div class="Rating d-flex {if $inverse}Rating--reverse{/if}" {if $microdata}itemprop="aggregateRating" itemscope itemtype="//schema.org/AggregateRating"{/if}>
+        {if $microdata}<meta itemprop="ratingCount" content="{$count}">{/if}
+        <span class="Rating-text">
+        {if $with_half}
+            <span {if $microdata}itemprop="ratingValue"{/if}>{$value}</span>/{$max}
+        {else}
+            <span {if $microdata}itemprop="ratingValue"{/if}>{floor($value)}</span>/{$max}
+        {/if}
+        </span>
+            <span class="Rating-mark">
+            {$half_val = $value - floor($value)}
+                {for $foo=1 to $max}
+                    {if $value >= $foo}
+                        <span class="icon-star"></span>
+                    {elseif $value <= $foo and $value > $foo - 1}
+                        <span class="icon-star-half-empty"></span>
+                    {else}
+                        <span class="icon-star-o"></span>
+                    {/if}
+                {/for}
+        </span>
+    </div>
+{/if}

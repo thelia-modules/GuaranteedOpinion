@@ -1,0 +1,127 @@
+<style>
+    .guaranteed_opinion .hidden {
+        display: none;
+    }
+
+    .guaranteed_opinion .font-sans {
+        font-family: sans-serif;
+    }
+
+    .guaranteed_opinion .leading-normal {
+        line-height: 1.6;
+    }
+
+    .guaranteed_opinion .text-gray-700 {
+        color: #4a5568;
+    }
+
+    .guaranteed_opinion .relative {
+        position: relative;
+    }
+
+    .guaranteed_opinion .inline-block {
+        display: inline-block;
+    }
+
+    .guaranteed_opinion .text-gray-200 {
+        color: #edf2f7;
+    }
+
+    .guaranteed_opinion .inline-flex {
+        display: inline-flex;
+    }
+
+    .guaranteed_opinion .space-x-1 > * + * {
+        margin-left: 0.25rem;
+    }
+
+    .guaranteed_opinion .w-8 {
+        width: 2rem;
+    }
+
+    .guaranteed_opinion .h-8 {
+        height: 2rem;
+    }
+
+    .guaranteed_opinion .overflow-hidden {
+        overflow: hidden;
+    }
+
+    .guaranteed_opinion .absolute {
+        position: absolute;
+    }
+
+    .guaranteed_opinion .left-0 {
+        left: 0;
+    }
+
+    .guaranteed_opinion .top-0 {
+        top: 0;
+    }
+
+    .guaranteed_opinion .text-yellow-400 {
+        color: #f6e05e;
+    }
+
+    .guaranteed_opinion .flex {
+        display: flex;
+    }
+
+    .guaranteed_opinion .space-x-1 {
+        gap: 0.25rem;
+    }
+
+    .guaranteed_opinion .flex-shrink-0 {
+        flex-shrink: 0;
+    }
+</style>
+
+<div class="guaranteed_opinion">
+    {assign var="rating_percentage" value=$site_rate*20}
+
+    <svg class="hidden">
+        <symbol id="star" width="32" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M31.77 11.857H19.74L15.99.5l-3.782 11.357H0l9.885 6.903-3.692 11.21 9.736-7.05 9.796 6.962-3.722-11.18 9.766-6.845z"
+                  fill="currentColor"/>
+        </symbol>
+    </svg>
+
+    <div class="font-sans leading-normal text-gray-700">
+        <div class="relative inline-block">
+            <div class="text-gray-200 inline-flex space-x-1">
+                <svg viewBox="0 0 32 30" class="w-8 h-8">
+                    <use xlink:href="#star"></use>
+                </svg>
+                <svg viewBox="0 0 32 30" class="w-8 h-8">
+                    <use xlink:href="#star"></use>
+                </svg>
+                <svg viewBox="0 0 32 30" class="w-8 h-8">
+                    <use xlink:href="#star"></use>
+                </svg>
+                <svg viewBox="0 0 32 30" class="w-8 h-8">
+                    <use xlink:href="#star"></use>
+                </svg>
+                <svg viewBox="0 0 32 30" class="w-8 h-8">
+                    <use xlink:href="#star"></use>
+                </svg>
+            </div>
+            <div class="overflow-hidden absolute left-0 top-0 text-yellow-400 flex space-x-1" style="width: {$rating_percentage}%">
+                <svg viewBox="0 0 32 30" class="w-8 h-8 flex-shrink-0">
+                    <use xlink:href="#star"></use>
+                </svg>
+                <svg viewBox="0 0 32 30" class="w-8 h-8 flex-shrink-0	">
+                    <use xlink:href="#star"></use>
+                </svg>
+                <svg viewBox="0 0 32 30" class="w-8 h-8 flex-shrink-0	">
+                    <use xlink:href="#star"></use>
+                </svg>
+                <svg viewBox="0 0 32 30" class="w-8 h-8 flex-shrink-0	">
+                    <use xlink:href="#star"></use>
+                </svg>
+                <svg viewBox="0 0 32 30" class="w-8 h-8 flex-shrink-0	">
+                    <use xlink:href="#star"></use>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>

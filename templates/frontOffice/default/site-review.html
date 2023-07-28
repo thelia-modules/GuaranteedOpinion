@@ -1,0 +1,25 @@
+<div id="guaranteed_opinion_site_review" class="guaranteed_opinion_container">
+
+    <div class="row no-gutters align-items-center">
+        <div class="text-center guaranteed_opinion_img col col-xl-5">
+            <a href="https://www.societe-des-avis-garantis.fr/" target="_blank" rel="noopener">
+{*                <img src="{getFileFromManifest file='dist/images/steavisgarantis_logo_badge_fr.png'}" alt="{intl l="logo avis garantis"}">*}
+{*                todo: build le dossier des images pour récupérer le logo ici*}
+                <img src="https://www.societe-des-avis-garantis.fr/lpassets/media/icons/cocarde-xl.png" alt="{intl l="logo avis garantis"}">
+            </a>
+        </div>
+        <div class="guaranteed_opinion_text col col-xl-7">
+            <div>
+{*                {include file="includes/rating.html" value={{$site_rate / 2 }|string_format:"%.1f"} with_half=true}*}
+            </div>
+
+            <div class="guaranteed_opinion_text_nb">{$site_reviews|count} avis</div>
+
+            <div>
+                {include file="includes/stars.html" site_rate=$site_rate}
+            </div>
+
+            <div class="guaranteed_opinion_text_legal" style="display: none">{intl l="Avis soumis"}<br />{intl l="à un contrôle"}</div>
+        </div>
+    </div>
+</div>
