@@ -99,22 +99,21 @@ class FrontHook extends BaseHook
 
     public function displayProductWidget(HookRenderEvent $event)
     {
-//        $display = ConfigQuery::read(GuaranteedOpinion::PRODUCT_REVIEW_DISPLAY);
-//        if (!$display) {
-//            return;
-//        }
-//        //todo request sql table to get site reviews
-//        $productReviews = ["bla", "bla"];
-//
-//        $event->add(
-//            $this->render(
-//                "product-review.html",
-//                [
-//                    "product_reviews" => $productReviews,
-//                    "product_rate" => 4.35
-//                ]
-//            )
-//        );
+        $display = ConfigQuery::read(GuaranteedOpinion::PRODUCT_REVIEW_DISPLAY);
+        if (!$display) {
+            return;
+        }
+        //todo request sql table to get site reviews
+        $productReviews = ["bla", "bla"];
+
+        $event->add(
+            $this->render(
+                "product-review.html",
+                [
+                    "product_reviews" => $productReviews,
+                ]
+            )
+        );
     }
 //
 //    public function displayProductIframe(HookRenderEvent $event)
