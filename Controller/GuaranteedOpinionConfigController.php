@@ -38,6 +38,9 @@ class GuaranteedOpinionConfigController extends BaseAdminController
             ConfigQuery::write(GuaranteedOpinion::SITE_REVIEW_DISPLAY, (bool)$data["site_review_display"]);
             ConfigQuery::write(GuaranteedOpinion::PRODUCT_REVIEW_HOOK_DISPLAY, $data["product_review_hook_display"]);
             ConfigQuery::write(GuaranteedOpinion::PRODUCT_REVIEW_DISPLAY, (bool)$data["product_review_display"]);
+            ConfigQuery::write(GuaranteedOpinion::PRODUCT_REVIEW_TAB_DISPLAY, (bool)$data["product_review_tab_display"]);
+            ConfigQuery::write(GuaranteedOpinion::SHOW_RATING_URL, $data["show_rating_url"]);
+
 
             $parserContext->set("success", true);
 

@@ -28,8 +28,10 @@
                 <label class="control-label" for="{$name}">{$label}</label>
                 <input class="form-control" id="{$name}" type="text" name="{$name}" value="{$data}" placeholder="https//cl.avis-verifies.com/fr/cache/1/5/b/[website_id]/AWS/PRODUCT_API/REVIEWS/[id_product].json "/>
             {/form_field}
+            {render_form_field field="show_rating_url"}
             {render_form_field field="exception_on_errors"}
         </div>
+        <br>
 
         <div class="col-md-4">
             <h2 class="title title-without-tabs">{intl l="Sending orders configuration" d='netreviews.bo.default'}</h2>
@@ -58,6 +60,7 @@
                 <div id="product_custom" class="product_review_mode_form">
                     {render_form_field form=$form field="product_review_hook_display" value={$data}}
                     {render_form_field field="product_review_display"}
+                    {render_form_field field="product_review_tab_display"}
                 </div>
             </div>
         </div>

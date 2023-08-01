@@ -4,6 +4,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        margin: 0 1rem 3rem 1rem;
     }
 
     .guaranteed_opinion_product_three_last {
@@ -16,6 +17,22 @@
         display: flex;
         flex-direction: column;
     }
+
+    .guaranteed_opinion_product_comment_rating {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .guaranteed_opinion_product_comment_rating span {
+        margin-left: 10px;
+    }
+
+    .guaranteed_opinion_product_comment_author {
+        font-size: 1.3rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
 </style>
 
 <div class="guaranteed_opinion_product_container">
@@ -25,20 +42,20 @@
     </div>
 
     <div class="guaranteed_opinion_product_three_last">
-        {foreach from=$lastRating item=rating}
+        {foreach from=$product_reviews item=rating}
             <div class="guaranteed_opinion_product_comment_container">
                 <div class="guaranteed_opinion_product_comment_rating">
-                    {include file="includes/stars.html" site_rate=$rating.rate} <span>{$rating.rate}</span>/5
+                    {include file="includes/stars.html" site_rate=$rating->getRating()} <span>{$rating->getRating()}/5</span>
                 </div>
                 <div class="guaranteed_opinion_product_comment_author">
-                    <span>{$rating.author}</span> le {$rating.date|date_format:"%d/%m/%Y"}
+                    <span>{$rating->getFirstName()} {$rating->getLastName()}</span> le {$rating->getReviewDate()|date_format:"%d/%m/%Y"}
                 </div>
-                <div class="guaranteed_opinion_product_comment_text">{$rating.text}</div>
+                <div class="guaranteed_opinion_product_comment_text">{$rating->getMessage()|truncate:190:"..."}</div>
             </div>
         {/foreach}
     </div>
 
     <div class="guaranteed_opinion_product_show_all_btn">
-        <a>Voir tous les avis</a>
+        <a href="{$show_rating_url}" target="_blank">Voir tous les avis</a>
     </div>
 </div>

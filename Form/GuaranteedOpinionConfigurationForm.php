@@ -103,6 +103,15 @@ class GuaranteedOpinionConfigurationForm extends BaseForm
                 ]
             )
             ->add(
+                'show_rating_url',
+                TextType::class,
+                [
+                    "data" => ConfigQuery::read(GuaranteedOpinion::SHOW_RATING_URL),
+                    "label"=>Translator::getInstance()->trans("Show all opinions url", array(), GuaranteedOpinion::DOMAIN_NAME),
+                    "required" => false
+                ]
+            )
+            ->add(
                 'status_to_export',
                 ChoiceType::class,
                 [
@@ -171,6 +180,11 @@ class GuaranteedOpinionConfigurationForm extends BaseForm
             ->add("product_review_display", CheckboxType::class, array(
                 "label" => $translator->trans("Show product review", [], GuaranteedOpinion::MESSAGE_DOMAIN),
                 "data" => (bool)ConfigQuery::read(GuaranteedOpinion::PRODUCT_REVIEW_DISPLAY, true),
+                'required' => false
+            ))
+            ->add("product_review_tab_display", CheckboxType::class, array(
+                "label" => $translator->trans("Show product review tab", [], GuaranteedOpinion::MESSAGE_DOMAIN),
+                "data" => (bool)ConfigQuery::read(GuaranteedOpinion::PRODUCT_REVIEW_TAB_DISPLAY, true),
                 'required' => false
             ))
         ;

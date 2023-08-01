@@ -44,6 +44,8 @@ class GuaranteedOpinion extends BaseModule
     const FOOTER_LINK_HOOK_DISPLAY = "guaranteed_opinion.footer_link_hook_display";
     const SITE_REVIEW_HOOK_DISPLAY = "guaranteed_opinion.site_review_hook_display";
     const PRODUCT_REVIEW_HOOK_DISPLAY = "guaranteed_opinion.product_review_hook_display";
+    const PRODUCT_REVIEW_TAB_DISPLAY = "guaranteed_opinion.product_review_tab_display";
+    const SHOW_RATING_URL = "guaranteed_opinion.show_rating_url";
 
     public function postActivation(ConnectionInterface $con = null): void
     {

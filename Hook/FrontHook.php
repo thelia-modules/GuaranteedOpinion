@@ -6,6 +6,7 @@ use GuaranteedOpinion\GuaranteedOpinion;
 use GuaranteedOpinion\Object\GuaranteedOpinionProduct;
 use GuaranteedOpinion\Service\OrderManager;
 use GuaranteedOpinion\Service\OrderService;
+use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\Connection\ConnectionWrapper;
 use Propel\Runtime\Propel;
 use Thelia\Core\Event\Hook\HookRenderBlockEvent;
@@ -33,6 +34,10 @@ class FrontHook extends BaseHook
             ConfigQuery::read(GuaranteedOpinion::PRODUCT_REVIEW_HOOK_DISPLAY) => [
                 "type" => "front",
                 "method" => "displayProductWidget"
+            ],
+            "product.additional" => [
+                "type" => "front",
+                "method" => "displayProductTab"
             ]
         ];
     }
@@ -83,34 +88,73 @@ class FrontHook extends BaseHook
         if (!$display) {
             return;
         }
-        //todo request sql table to get site reviews
-        $siteReviews = ["bla", "bla"];
+
+        $siteReviews = \GuaranteedOpinionSiteReviewQuery::create()->find();
+
+        $siteRate = 5;
+        if ($siteReviews->count() !== 0) {
+            $siteRate = 0;
+            foreach ($siteReviews as $siteReview) {
+                $siteRate += $siteReview->getRate();
+            }
+            $siteRate /= $siteReviews->count();
+        }
 
         $event->add(
             $this->render(
                 "site/site-review.html",
                 [
                     "site_reviews" => $siteReviews,
-                    "site_rate" => 4.35
+                    "site_rate" => $siteRate
                 ]
             )
         );
     }
 
-    public function displayProductWidget(HookRenderEvent $event)
+    public function displayProductTab(HookRenderBlockEvent $event)
     {
+        $display = ConfigQuery::read(GuaranteedOpinion::PRODUCT_REVIEW_TAB_DISPLAY);
+        if (!$display) {
+            return;
+        }
+
+        $productReviews = \GuaranteedOpinionProductReviewQuery::create()
+            ->filterByProductId($event->getTemplateVars()['product_id'])
+            ->orderByReviewDate(Criteria::DESC)
+            ->limit(10)
+            ->find();
+
+        $event->add([
+            'id' => 'guaranteedopinion-product-review',
+            'class' => 'guaranteedopinion-product-review',
+            "title" => "Avis clients",
+            "content" => $this->render(
+                "product/product-review-tab.html",
+                [
+                    "product_reviews" => $productReviews,
+                    "show_rating_url" => ConfigQuery::read(GuaranteedOpinion::SHOW_RATING_URL),
+                ]
+            )
+        ]);
+    }
+
+    public function displayProductWidget(HookRenderEvent $event) {
         $display = ConfigQuery::read(GuaranteedOpinion::PRODUCT_REVIEW_DISPLAY);
         if (!$display) {
             return;
         }
-        //todo request sql table to get site reviews
-        $productReviews = ["bla", "bla"];
 
-        $event->add(
-            $this->render(
-                "product-review.html",
+        $productReviews = \GuaranteedOpinionProductReviewQuery::create()
+            ->filterByProductId($event->getTemplateVars()['product_id'])
+            ->orderByReviewDate(Criteria::DESC)
+            ->limit(3)
+            ->find();
+
+        $event->add($this->render(
+                "product/product-review.html",
                 [
                     "product_reviews" => $productReviews,
+                    "show_rating_url" => ConfigQuery::read(GuaranteedOpinion::SHOW_RATING_URL),
                 ]
             )
         );

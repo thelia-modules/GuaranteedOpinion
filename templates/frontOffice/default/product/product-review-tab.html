@@ -1,0 +1,47 @@
+<style>
+    .guaranteed_opinion_product_tab_container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .guaranteed_opinion_product_tab_comment_container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .border-separate {
+        margin: 10px 0;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .guaranteed_opinion_product_tab_comment_rating {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .guaranteed_opinion_product_tab_comment_rating span {
+        margin-left: 10px;
+    }
+</style>
+
+<div class="guaranteed_opinion_product_tab_container">
+    {foreach from=$product_reviews item=rating}
+        <div class="guaranteed_opinion_product_tab_comment_container">
+            <div class="guaranteed_opinion_product_tab_comment_rating">
+                {include file="includes/stars.html" site_rate=$rating->getRating()} <span>{$rating->getRating()}/5</span>
+            </div>
+            <div class="guaranteed_opinion_product_tab_comment_author">
+                <span>{$rating->getFirstName()} {$rating->getLastName()}</span> le {$rating->getReviewDate()|date_format:"%d/%m/%Y"}
+            </div>
+            <div class="guaranteed_opinion_product_tab_comment_text">{$rating->getMessage()|truncate:900:"..."}</div>
+            <div class="border-separate"></div>
+        </div>
+    {/foreach}
+
+    <div class="guaranteed_opinion_product_tab_show_all_btn">
+        <a href="{$show_rating_url}" target="_blank">Voir tous les avis</a>
+    </div>
+</div>
