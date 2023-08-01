@@ -4,30 +4,39 @@
     See propel documentation on http://propelorm.org for all information about schema file
     -->
     <table name="guaranteed_opinion_product_review">
-        <column name="product_review_id" primaryKey="true" type="VARCHAR" size="55" required="true" />
+        <column name="id" autoIncrement="true" type="INTEGER" required="true" primaryKey="true" />
+        <column name="product_review_id" type="VARCHAR" size="55" required="true" />
         <column name="review_id" type="VARCHAR" size="55" required="true" />
         <column name="email" type="VARCHAR" size="255" />
         <column name="lastname" type="VARCHAR" size="255" />
         <column name="firstname" type="VARCHAR" size="255" />
         <column name="review_date" type="TIMESTAMP" />
         <column name="message" size="10000" sqlType="VARBINARY(10000)" type="VARCHAR"/>
-        <column name="rate" type="VARCHAR" size="255" />
-        <column name="order_ref" type="VARCHAR" size="255"/>
-        <column name="product_ref" type="VARCHAR" size="255"/>
-        <column name="product_id" type="INTEGER"/>
+        <column name="rating" type="VARCHAR" size="255" />
+        <column name="order_id" type="VARCHAR" size="255"/>
+        <column name="product_id" type="VARCHAR" size="255"/>
+
+        <unique name="product_review_id_unique">
+            <unique-column name="product_review_id"/>
+        </unique>
+
+        <unique name="review_id_unique">
+            <unique-column name="review_id"/>
+        </unique>
 
         <behavior name="timestampable" />
     </table>
 
     <table name="guaranteed_opinion_site_review">
-        <column autoIncrement="true" name="site_review_id" primaryKey="true" type="INTEGER" required="true" />
+        <column name="id" autoIncrement="true" type="INTEGER" required="true" primaryKey="true" />
+        <column autoIncrement="true" name="site_review_id" type="INTEGER" required="true" />
         <column name="review_id" type="VARCHAR" size="255" required="true" />
         <column name="lastname" type="VARCHAR" size="255" />
         <column name="firstname" type="VARCHAR" size="255" />
-        <column name="review" size="10000" sqlType="VARBINARY(10000)" type="VARCHAR"/>
         <column name="review_date" type="TIMESTAMP"/>
-        <column name="rate" type="VARCHAR" size="255" />
-        <column name="order_ref" type="VARCHAR" size="255"/>
+        <column name="message" size="10000" sqlType="VARBINARY(10000)" type="VARCHAR"/>
+        <column name="rating" type="FLOAT" size="255" />
+        <column name="order_id" type="VARCHAR" size="255"/>
         <column name="order_date" type="TIMESTAMP"/>
 
         <unique name="review_id_unique">
