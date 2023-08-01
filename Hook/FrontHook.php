@@ -95,7 +95,7 @@ class FrontHook extends BaseHook
         if ($siteReviews->count() !== 0) {
             $siteRate = 0;
             foreach ($siteReviews as $siteReview) {
-                $siteRate += $siteReview->getRate();
+                $siteRate += $siteReview->getRating();
             }
             $siteRate /= $siteReviews->count();
         }
