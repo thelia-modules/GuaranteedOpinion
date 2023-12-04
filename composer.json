@@ -1,14 +1,10 @@
 {
-  "name": "thelia/guaranteed_opinion-module",
-  "license": "LGPL-3.0+",
+  "name": "thelia/guaranteed-opinion-module",
+  "description": "GuaranteedOpinion module for Thelia",
+  "license": "LGPL-3.0-or-later",
   "type": "thelia-module",
   "require": {
-    "thelia/installer": "~1.1",
-    "guaranteed_opinion/api-v3-sdk": "8.x.x"
-  }
-  ,
-  "require-dev": {
-    "roave/security-advisories": "dev-latest"
+    "thelia/installer": "~1.1"
   },
   "extra": {
     "installer-name": "GuaranteedOpinion"

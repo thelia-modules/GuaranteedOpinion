@@ -2,60 +2,82 @@
     .guaranteed_opinion_product_container {
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin: 0 1rem 3rem 1rem;
-    }
-
-    .guaranteed_opinion_product_three_last {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-    }
-
-    .guaranteed_opinion_product_comment_container {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .guaranteed_opinion_product_comment_rating {
-        display: flex;
-        flex-direction: row;
         align-items: center;
     }
 
-    .guaranteed_opinion_product_comment_rating span {
-        margin-left: 10px;
+    .guaranteed_opinion_review_top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
-    .guaranteed_opinion_product_comment_author {
-        font-size: 1.3rem;
-        color: #666;
-        margin-bottom: 0.5rem;
+    .guaranteed_opinion_review_text {
+        margin-top: 10%;
+    }
+
+    .guaranteed_opinion_author {
+        color: #282829;
+        font-weight: 600;
+    }
+
+    .guaranteed_opinion_date {
+        font-size: 9px;
+        font-weight: 400;
+        color: rgba(40, 40, 41, 0.5);
+        margin-bottom: 2%;
+    }
+
+    .guaranteed_review_list li {
+        list-style: none;
+        padding: 15px;
+        position: relative;
+        border-radius: 20px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        margin: auto 10px;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .guaranteed_opinion_product_title {
+        font-size: 1.75rem;
+        line-height: 1.1;
+        margin-bottom: 2%;
+    }
+
+    .guaranteed_opinion_product_show_all_btn {
+        margin: 2%;
     }
 </style>
 
-<div class="guaranteed_opinion_product_container">
+<section class="guaranteed_opinion_product_container">
+    {if !empty($product_reviews[0]) }
+        <div class="guaranteed_opinion_product_title">
+            <h2>{intl l="Lastest customer reviews" d="guaranteedopinion.fo.module"} </h2>
+        </div>
 
-    <div class="guaranteed_opinion_product_title">
-        <h2>Les derniers avis de nos clients</h2>
-    </div>
-
-    <div class="guaranteed_opinion_product_three_last">
-        {foreach from=$product_reviews item=rating}
-            <div class="guaranteed_opinion_product_comment_container">
-                <div class="guaranteed_opinion_product_comment_rating">
-                    {include file="includes/stars.html" site_rate=$rating->getRating()} <span>{$rating->getRating()}/5</span>
+        <ul class="guaranteed_review_list">
+            {foreach from=$product_reviews item=rating}
+            <li class="guaranteed_opinion_card">
+                <div class="guaranteed_opinion_review_top">
+                    {include file="includes/stars.html" site_rate=$rating->getRate()}
                 </div>
-                <div class="guaranteed_opinion_product_comment_author">
-                    <span>{$rating->getFirstName()} {$rating->getLastName()}</span> le {$rating->getReviewDate()|date_format:"%d/%m/%Y"}
+                <div class="guaranteed_opinion_author">
+                    <span>{$rating->getName()} </span>
                 </div>
-                <div class="guaranteed_opinion_product_comment_text">{$rating->getMessage()|truncate:190:"..."}</div>
-            </div>
-        {/foreach}
-    </div>
+                <div class="guaranteed_opinion_date">
+                    {intl l="The" d="guaranteedopinion.fo.module"} {$rating->getReviewDate()|date_format:"%d/%m/%Y"}
+                </div>
+                <div class="guaranteed_opinion_review_text">{$rating->getReview()|truncate:190:"..."}</div>
+            </li>
+            {/foreach}
+        </ul>
 
-    <div class="guaranteed_opinion_product_show_all_btn">
-        <a href="{$show_rating_url}" target="_blank">Voir tous les avis</a>
-    </div>
-</div>
+        <div class="guaranteed_opinion_product_show_all_btn">
+            <a href="{$show_rating_url}" target="_blank">{intl l="Show all reviews" d="guaranteedopinion.fo.module"}</a>
+        </div>
+    {else}
+        <div class="guaranteed_opinion_product_title">
+            <h2>{intl l="No Reviews for this product" d="guaranteedopinion.fo.module"}</h2>
+        </div>
+    {/if}
+</section>

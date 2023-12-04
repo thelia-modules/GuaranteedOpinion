@@ -12,11 +12,8 @@
 
 namespace GuaranteedOpinion\Api;
 
-use GuaranteedOpinion\GuaranteedOpinion as GuaranteedOpinionModule;
-use Thelia\Model\Base\Product;
-use Thelia\Model\ConfigQuery;
-use Thelia\Model\Customer;
-use Thelia\Model\OrderProduct;
+use GuaranteedOpinion\GuaranteedOpinion;
+use Thelia\Model\Order;
 
 /**
  * Class GuaranteedOpinionClient
@@ -25,37 +22,57 @@ use Thelia\Model\OrderProduct;
  */
 class GuaranteedOpinionClient
 {
+    private const URL_API = "https://api.guaranteed-reviews.com/";
+    private const URL_API_REVIEW = "public/v3/reviews";
+    private const URL_API_ORDER = "private/v3/orders";
 
-    const URL_API = "https://www.societe-des-avis-garantis.fr/";
-    const SAGAPIENDPOINT = "wp-content/plugins/ag-core/api/";
+    /**
+     * Call API Avis-Garantis
+     * Return all the reviews of the store or productId
+     *
+     * @param string $scope 'site' or productId
+     * @return array
+     * @throws \JsonException
+     */
+    public function getReviewsFromApi(string $scope = 'site'): array
+    {
+        $url = self::URL_API . "/" . self::URL_API_REVIEW . "/" . GuaranteedOpinion::getConfigValue(GuaranteedOpinion::CONFIG_API_REVIEW) . "/" . $scope;
 
-    function getLast(int $howMany, ?Product $product = null) {
-        //todo: call guaranteed-opinions api to get the last $howMany reviews by product or global
-//        $url = "https://www.guaranteed-opinions.com/api/last/$howMany";
-//        if ($product) {
-//            $url .= "?product_id=" . $product->getId();
-//        }
-//        $curl = curl_init($url);
-//        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-//        $response = curl_exec($curl);
-//        curl_close($curl);
-//        return json_decode($response);
-    }
-
-    function postOrder(Customer $customer, OrderProduct $orderProduct) {
-        //todo send this new thelia order to guaranteed-opinions
-    }
-
-    function tokenCheck(){
-        $domainUrl = $this::URL_API;
-        $apiKey = ConfigQuery::read(GuaranteedOpinionModule::CONFIG_API_SECRET);
-        $url = $domainUrl . $this::SAGAPIENDPOINT . "checkToken.php?token=" . $token . "&apiKey=" . $apiKey;
         $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        return curl_exec($ch);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+
+        curl_close($ch);
+
+        return json_decode($response, false, 512, JSON_THROW_ON_ERROR)->reviews;
+    }
+
+    /**
+     * @throws \JsonException
+     */
+    public function sendOrder($jsonOrder)
+    {
+        $url = self::URL_API . "/" . self::URL_API_ORDER;
+
+        $request = [
+            'api_key' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::CONFIG_API_ORDER),
+            'orders' => $jsonOrder
+        ];
+
+        // Prepare CURL request
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
+
+        // Execute CURL request
+        $response = curl_exec($ch);
+
+        // Close the connection, release resources used
+        curl_close($ch);
+
+        return json_decode($response, false, 512, JSON_THROW_ON_ERROR);
     }
 }
