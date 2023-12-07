@@ -22,10 +22,6 @@ class GuaranteedOpinion extends BaseModule
     public const STORE_URL = "guaranteedopinion.store_url";
 
     public const SHOW_RATING_URL = "guaranteedopinion.show_rating_url";
-    public const FOOTER_LINK_TITLE = "guaranteedopinion.footer_link_title";
-    public const FOOTER_LINK = "guaranteedopinion.footer_link";
-    public const FOOTER_LINK_HOOK_DISPLAY = "guaranteedopinion.footer_link_hook_display";
-    public const FOOTER_LINK_DISPLAY = "guaranteedopinion.footer_link_display";
 
     public const SITE_REVIEW_DISPLAY = "guaranteedopinion.site_review_display";
     public const SITE_REVIEW_HOOK_DISPLAY = "guaranteedopinion.site_review_hook_display";

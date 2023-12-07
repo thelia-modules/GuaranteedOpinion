@@ -20,10 +20,6 @@
                             <div class="col-md-12 form-group">
                                 {render_form_field field="api_key_review"}
                                 <div>
-                                    <p>{intl l="Import Guaranteed Opinion Site Review : " d='guaranteedopinion.bo.default'}</p>
-                                    <p class="well well-sm">php Thelia module:GuaranteedOpinion:GetSiteReview</p>
-                                </div>
-                                <div>
                                     <p>{intl l="Import Guaranteed Opinion Product Review : " d='guaranteedopinion.bo.default'}</p>
                                     <p class="well well-sm">php Thelia module:GuaranteedOpinion:GetProductReview</p>
                                 </div>
@@ -71,18 +67,6 @@
                                     {render_form_field field="site_review_widget"}
                                     {render_form_field field="site_review_widget_iframe"}
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h2 class="title title-without-tabs">{intl l="Footer link" d='guaranteedopinion.bo.default'}</h2>
-                            <div class="col-md-12 form-group">
-                                {render_form_field form=$form field="footer_link_title"}
-                                {render_form_field form=$form field="footer_link"}
-                                {render_form_field form=$form field="footer_link_hook_display"}
-                                {render_form_field field="footer_link_display"}
                             </div>
                         </div>
                     </div>

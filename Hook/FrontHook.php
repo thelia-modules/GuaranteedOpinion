@@ -15,10 +15,6 @@ class FrontHook extends BaseHook
     public static function getSubscribedHooks(): array
     {
         return [
-            GuaranteedOpinion::getConfigValue(GuaranteedOpinion::FOOTER_LINK_HOOK_DISPLAY) => [
-                "type" => "front",
-                "method" => "displayFooterLink"
-            ],
             GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_HOOK_DISPLAY) => [
                 "type" => "front",
                 "method" => "displaySiteWidget"
@@ -88,7 +84,6 @@ class FrontHook extends BaseHook
         $productReviews = GuaranteedOpinionProductReviewQuery::create()
             ->filterByProductId($event->getTemplateVars()['product_id'])
             ->orderByReviewDate(Criteria::DESC)
-            ->limit(3)
             ->find();
 
         $event->add(
@@ -99,19 +94,5 @@ class FrontHook extends BaseHook
                 ]
             )
         );
-    }
-
-    public function displayFooterLink(HookRenderEvent $event): void
-    {
-        if (!GuaranteedOpinion::getConfigValue(GuaranteedOpinion::FOOTER_LINK_DISPLAY)) {
-            return;
-        }
-
-        $content = $this->render('site/footer-link.html', [
-            'link_title' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::FOOTER_LINK_TITLE),
-            'link' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::FOOTER_LINK)
-        ]);
-
-        $event->add($content);
     }
 }

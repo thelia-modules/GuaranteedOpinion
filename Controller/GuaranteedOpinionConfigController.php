@@ -31,9 +31,6 @@ class GuaranteedOpinionConfigController extends BaseAdminController
             GuaranteedOpinion::setConfigValue(GuaranteedOpinion::EMAIL_DELAY, $data["email_delay"]);
 
             GuaranteedOpinion::setConfigValue(GuaranteedOpinion::FOOTER_LINK_TITLE, $data["footer_link_title"]);
-            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::FOOTER_LINK, $data["footer_link"]);
-            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::FOOTER_LINK_HOOK_DISPLAY, $data["footer_link_hook_display"]);
-            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::FOOTER_LINK_DISPLAY, (bool)$data["footer_link_display"]);
 
             GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SITE_REVIEW_HOOK_DISPLAY, $data["site_review_hook_display"]);
             GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SITE_REVIEW_DISPLAY, (bool)$data["site_review_display"]);

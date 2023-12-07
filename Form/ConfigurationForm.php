@@ -104,40 +104,6 @@ class ConfigurationForm extends BaseForm
                 ]
             )
 
-            /* FOOTER */
-            ->add(
-                "footer_link_title",
-                TextType::class,
-                [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::FOOTER_LINK_TITLE),
-                    "label"=>$translator->trans("Footer link title", array(), GuaranteedOpinion::DOMAIN_NAME),
-                    "required" => false
-                ]
-            )
-            ->add(
-                "footer_link",
-                TextType::class,
-                [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::FOOTER_LINK),
-                    "label"=>$translator->trans("Footer link", array(), GuaranteedOpinion::DOMAIN_NAME),
-                    "required" => false
-                ]
-            )
-            ->add(
-                "footer_link_hook_display",
-                TextType::class,
-                [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::FOOTER_LINK_HOOK_DISPLAY) ?: "main.footer-bottom",
-                    "label"=>$translator->trans("Footer link hook display", array(), GuaranteedOpinion::DOMAIN_NAME),
-                    "required" => false,
-                ]
-            )
-            ->add("footer_link_display", CheckboxType::class, array(
-                "label" => $translator->trans("Show footer link", [], GuaranteedOpinion::DOMAIN_NAME),
-                "data" => (bool)GuaranteedOpinion::getConfigValue(GuaranteedOpinion::FOOTER_LINK_DISPLAY, true),
-                'required' => false
-            ))
-
             /* HOOK */
             ->add(
                 "site_review_hook_display",
