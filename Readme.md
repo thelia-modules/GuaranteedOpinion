@@ -1,55 +1,35 @@
 # Guaranteed Opinion
 
-Add a short description here. You can also add a screenshot if needed.
+This module allows you to import your opinion on your Thelia website and export your order using Avis-Garantis API
 
 ## Installation
-
-### Manually
-
-* Copy the module into ```<thelia_root>/local/modules/``` directory and be sure that the name of the module is GuaranteedOpinion.
-* Activate it in your thelia administration panel
 
 ### Composer
 
 Add it in your main thelia composer.json file
 
 ```
-composer require your-vendor/guaranteed-opinion-module:~1.0
+composer require theloa/guaranteed-opinion-module:~1.0
 ```
 
 ## Usage
 
-Explain here how to use your module, how to configure it, etc.
+Configure the module backoffice with your api keys
+
+Then, add a crong :
+
+To import your product opinion :
+```
+php Thelia module:GuaranteedOpinion:GetProductReview
+```
+
+To export your order :
+```
+php Thelia module:GuaranteedOpinion:SendOrder
+```
+
+No need to import your site opinion, you only need to use the widget and widget iframe
 
 ## Hook
 
-If your module use one or more hook, fill this part. Explain which hooks are used.
-
-
-## Loop
-
-If your module declare one or more loop, describe them here like this :
-
-[loop name]
-
-### Input arguments
-
-|Argument |Description |
-|---      |--- |
-|**arg1** | describe arg1 with an exemple. |
-|**arg2** | describe arg2 with an exemple. |
-
-### Output arguments
-
-|Variable   |Description |
-|---        |--- |
-|$VAR1    | describe $VAR1 variable |
-|$VAR2    | describe $VAR2 variable |
-
-### Exemple
-
-Add a complete exemple of your loop
-
-## Other ?
-
-If you have other think to put, feel free to complete your readme as you want.
+Configure your hook in the backOffice
