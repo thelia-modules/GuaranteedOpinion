@@ -4,49 +4,4 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
 
-    <forms>
-        <form name="guaranteed_opinion.configuration" class="GuaranteedOpinion\Form\GuaranteedOpinionConfigurationForm" />
-    </forms>
-
-    <services>
-        <service id="guaranteed_opinion.order.listener" class="GuaranteedOpinion\EventListeners\OrderListener">
-            <tag name="kernel.event_subscriber" />
-        </service>
-        <service id="guaranteed_opinion.order.manager" class="GuaranteedOpinion\Service\OrderManager">
-            <argument type="service" id="event_dispatcher"/>
-<!--            <argument type="service" id="request"/>-->
-        </service>
-        <service id="guaranteed_opinion.product_review.service" class="GuaranteedOpinion\Service\ProductReviewManager">
-        </service>
-        <service id="guaranteed_opinion.site_review.service" class="GuaranteedOpinion\Service\SiteReviewManager">
-        </service>
-<!--        <service id="guaranteed_opinion.product_review.smarty.plugin" class="GuaranteedOpinion\Smarty\ProductReviews">-->
-<!--            <tag name="thelia.parser.register_plugin"/>-->
-<!--            <argument type="service" id="guaranteed_opinion.product_review.service"/>-->
-<!--        </service>-->
-<!--        <service id="guaranteed_opinion.site_review.smarty.plugin" class="GuaranteedOpinion\Smarty\SiteReviews">-->
-<!--            <tag name="thelia.parser.register_plugin"/>-->
-<!--            <argument type="service" id="guaranteed_opinion.site_review.service"/>-->
-<!--        </service>-->
-    </services>
-
-    <hooks>
-        <hook id="guaranteed_opinion.hook.front" class="GuaranteedOpinion\Hook\FrontHook">
-<!--            <tag name="hook.event_listener" event="main.footer-bottom" type="front" method="displayFooterLink" />-->
-<!--            <tag name="hook.event_listener" event="main.body-top" type="front" method="displaySiteWidget" />-->
-<!--            <tag name="hook.event_listener" event="product.additional" type="front" method="displayProductTabReview" />-->
-
-<!--            <tag name="hook.event_listener" event="guaranteed_opinion.tagmanager" type="front" method="displayTag" />-->
-<!--            <tag name="hook.event_listener" event="guaranteed_opinion.site.widget" type="front" method="displaySiteWidget" />-->
-<!--            <tag name="hook.event_listener" event="guaranteed_opinion.product.iframe" type="front" method="displayProductIframe" />-->
-<!--            <tag name="hook.event_listener" event="guaranteed_opinion.footer.link" type="front" method="displayFooterLink" />-->
-
-            <argument type="service" id="guaranteed_opinion.order.manager"/>
-        </hook>
-
-<!--        <hook id="guaranteed_opinion.hook.back" class="GuaranteedOpinion\Hook\BackHook">-->
-<!--            <tag name="hook.event_listener" event="order-edit.bottom" type="back" method="onOrderEditBottom" />-->
-<!--        </hook>-->
-    </hooks>
-
 </config>

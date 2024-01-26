@@ -1,0 +1,81 @@
+<div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                {intl l="GuaranteedOpinion configuration" d='guaranteedopinion.bo.default'}
+            </h4>
+        </div>
+
+        {form name="guaranteedopinion_form_configuration_form"}
+            <form action="{url path="/admin/module/GuaranteedOpinion/configuration"}" method="post">
+                {form_hidden_fields }
+                {render_form_field field="success_url" value={url path='/admin/module/GuaranteedOpinion'}}
+                {render_form_field field="error_url" value={url path='/admin/module/GuaranteedOpinion'}}
+
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h2 class="title title-without-tabs">{intl l="Guaranteed Opinion Review access" d='guaranteedopinion.bo.default'}</h2>
+
+                            <div class="col-md-12 form-group">
+                                {render_form_field field="api_key_review"}
+                                <div>
+                                    <p>{intl l="Import Guaranteed Opinion Product Review : " d='guaranteedopinion.bo.default'}</p>
+                                    <p class="well well-sm">php Thelia module:GuaranteedOpinion:GetProductReview</p>
+                                </div>
+                                {render_form_field field="show_rating_url"}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h2 class="title title-without-tabs">{intl l="Guaranteed Opinion Order access" d='guaranteedopinion.bo.default'}</h2>
+
+                            <div class="col-md-12 form-group">
+                                {render_form_field field="api_key_order"}
+                                <div>
+                                    <p>{intl l="Send Guaranteed Opinion Order : " d='guaranteedopinion.bo.default'}</p>
+                                    <p class="well well-sm">php Thelia module:GuaranteedOpinion:SendOrder</p>
+                                </div>
+
+                                <div class="form-group">
+                                    {render_form_field form=$form field="store_url"}
+                                    {render_form_field form=$form field="email_delay"}
+                                    {render_form_field form=$form field="status_to_export"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h2 class="title title-without-tabs">{intl l="Product reviews" d='guaranteedopinion.bo.default'}</h2>
+                            <div class="col-md-12 form-group">
+                                <div id="product_custom" class="product_review_mode_form">
+                                    {render_form_field form=$form field="product_review_hook_display"}
+                                    {render_form_field field="product_review_display"}
+                                    {render_form_field field="product_review_tab_display"}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h2 class="title title-without-tabs">{intl l="Site reviews" d='guaranteedopinion.bo.default'}</h2>
+                            <div class="col-md-12 form-group">
+                                <div id="site_custom" class="site_review_mode_form">
+                                    {render_form_field form=$form field="site_review_hook_display"}
+                                    {render_form_field field="site_review_display"}
+                                    {render_form_field field="site_review_widget"}
+                                    {render_form_field field="site_review_widget_iframe"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <input type="submit" class="btn btn-success form-control">
+                    </div>
+                </div>
+            </form>
+        {/form}
+    </div>
+</div>

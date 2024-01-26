@@ -2,50 +2,59 @@
 
 namespace GuaranteedOpinion\EventListeners;
 
+use GuaranteedOpinion\GuaranteedOpinion;
+use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueue;
+use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueueQuery;
+use GuaranteedOpinion\Service\OrderService;
+use Propel\Runtime\Exception\PropelException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
+use Thelia\Model\OrderStatusQuery;
 
 class OrderListener implements EventSubscriberInterface
 {
+    public function __construct(
+        protected RequestStack $requestStack,
+        protected OrderService $orderService
+    ) {}
 
-    private function newOrder(OrderEvent $orderEvent){
-        $order = $orderEvent->getOrder();
+    /**
+     * @throws PropelException
+     */
+    public function sendOrderToQueue(OrderEvent $orderEvent): void
+    {
+        $request = $this->requestStack->getCurrentRequest()->request;
 
-        $form = $this->createForm("guaranteed_opinion_send_order_form");
-
-        try {
-            $data = $this->validateForm($form)->getData();
-
-            /** @var OrderService $orderService */
-            $orderService = $this->container->get('netreviews.order.service');
-
-            $response = $orderService->sendOrderToNetReviews($orderId);
-            $return = $response->return;
-
-            if ($return != 1) {
-                $debug = $response->debug;
-                throw new \Exception($debug);
-            }
-        } catch (\Exception $e) {
-            $this->setupFormErrorContext(
-                Translator::getInstance()->trans(
-                    "Error",
-                    [],
-                    NetReviews::DOMAIN_NAME
-                ),
-                $e->getMessage(),
-                $form
-            );
+        if (null !== GuaranteedOpinionOrderQueueQuery::create()->findOneByOrderId($orderEvent->getOrder()->getId()))
+        {
+            return;
         }
 
-        return $this->generateSuccessRedirect($form);
+        $orderStatuses = explode(',', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT));
+
+        foreach ($orderStatuses as $orderStatus)
+        {
+            if ($orderStatus === $status = $request->get('status_id'))
+            {
+                $guaranteedOpinionOrderQueue = new GuaranteedOpinionOrderQueue();
+
+                $guaranteedOpinionOrderQueue
+                    ->setOrderId($orderEvent->getOrder()->getId())
+                    ->setTreatedAt(new \DateTime(''))
+                    ->setStatus($status)
+                ;
+
+                $guaranteedOpinionOrderQueue->save();
+            }
+        }
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return array(
-            TheliaEvents::ORDER_PAY => ["newOrder", 192]
+            TheliaEvents::ORDER_UPDATE_STATUS => ["sendOrderToQueue", 192]
         );
     }
 }
