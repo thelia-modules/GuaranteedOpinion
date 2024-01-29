@@ -4,7 +4,6 @@ namespace GuaranteedOpinion\Hook;
 
 use GuaranteedOpinion\GuaranteedOpinion;
 use GuaranteedOpinion\Model\GuaranteedOpinionProductReviewQuery;
-use GuaranteedOpinion\Model\GuaranteedOpinionSiteReviewQuery;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Thelia\Core\Event\Hook\HookRenderBlockEvent;
 use Thelia\Core\Event\Hook\HookRenderEvent;

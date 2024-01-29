@@ -13,7 +13,6 @@
 namespace GuaranteedOpinion\Api;
 
 use GuaranteedOpinion\GuaranteedOpinion;
-use Thelia\Model\Order;
 
 /**
  * Class GuaranteedOpinionClient

@@ -5,6 +5,7 @@ namespace GuaranteedOpinion\Service;
 use GuaranteedOpinion\GuaranteedOpinion;
 use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueue;
 use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueueQuery;
+use Propel\Runtime\Exception\PropelException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Thelia\Model\OrderProduct;
 use Thelia\Model\OrderQuery;
@@ -43,17 +44,17 @@ class OrderService
 
         $jsonProduct = [];
 
-        foreach ($order->getOrderProducts() as $orderProduct) {
+        foreach ($order?->getOrderProducts() as $orderProduct) {
             $jsonProduct[] = $this->productToJsonObject($orderProduct);
         }
 
         return [
-            'id_order' => $order->getId(),
-            'order_date' => $order->getCreatedAt()->format('Y-m-d H:i:s'),
-            'firstname' => $order->getCustomer()->getFirstname(),
-            'lastname' => $order->getCustomer()->getLastname(),
-            'email' => $order->getCustomer()->getEmail(),
-            'reference' => $order->getRef(),
+            'id_order' => $order?->getId(),
+            'order_date' => $order?->getCreatedAt()->format('Y-m-d H:i:s'),
+            'firstname' => $order?->getCustomer()->getFirstname(),
+            'lastname' => $order?->getCustomer()->getLastname(),
+            'email' => $order?->getCustomer()->getEmail(),
+            'reference' => $order?->getRef(),
             'products' => $jsonProduct
         ];
     }
@@ -65,21 +66,24 @@ class OrderService
         $category  = GuaranteedOpinionOrderQueueQuery::getCategoryByProductSaleElements($pse);
 
         return [
-            'id' => $pse->getProductId(),
-            'name' => $pse->getProduct()->getRef(),
+            'id' => $pse?->getProductId(),
+            'name' => $pse?->getProduct()->getRef(),
             'category_id' => $category->getId(),
             'category_name' => $category->getTitle(),
             'qty' => $orderProduct->getQuantity(),
             'unit_price' => $orderProduct->getPrice(),
             'mpn' => null,
-            'ean13' => $pse->getEanCode(),
+            'ean13' => $pse?->getEanCode(),
             'sku' => null,
             'upc' => null,
             'url' => GuaranteedOpinion::STORE_URL . '/'.
-                GuaranteedOpinionOrderQueueQuery::getProductUrl($pse->getProductId())->getUrl(),
+                GuaranteedOpinionOrderQueueQuery::getProductUrl($pse?->getProductId())->getUrl(),
         ];
     }
 
+    /**
+     * @throws PropelException
+     */
     public function clearOrderQueueTable(): void
     {
         $orders = GuaranteedOpinionOrderQueueQuery::create()->find();
