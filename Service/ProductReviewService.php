@@ -5,10 +5,7 @@ namespace GuaranteedOpinion\Service;
 use GuaranteedOpinion\GuaranteedOpinion;
 use GuaranteedOpinion\Model\GuaranteedOpinionProductReview;
 use GuaranteedOpinion\Model\GuaranteedOpinionProductReviewQuery;
-use PDO;
 use Propel\Runtime\Exception\PropelException;
-use Propel\Runtime\Propel;
-use Thelia\Model\ProductQuery;
 
 class ProductReviewService
 {
@@ -56,8 +53,6 @@ class ProductReviewService
             GuaranteedOpinion::log($e->getMessage());
         }
     }
-
-
 
     /**
      * @throws PropelException
