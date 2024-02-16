@@ -32,30 +32,57 @@ No need to import your site opinion, you only need to use the widget and widget 
 
 ## Loop
 
-[google_reviews_loop]
+[guaranteed_site_loop]
 
 ### Input arguments
 
-| Argument     | Description                    |
-|--------------|--------------------------------|
-| **min_rate** | minimum score allowed. (min 0) |
-| **product**  | id of your product             |
+| Argument     | Description                       |
+|--------------|-----------------------------------|
+| **min_rate** | minimum score allowed. (min 0)    |
+| **limit**    | limit for pagination. (default 5) |
+| **page**     | page for pagination. (default 0)  |
 
 ### Output arguments
 
-| Variable           | Description                  |
-|--------------------|------------------------------|
-| $ID                | id of your review            |
-| $PRODUCT_REVIEW_ID | guaranteed opinion review id |
-| $NAME              | name of the reviewer         |
-| $RATE              | score                        |
-| $REVIEW            | review message               |
-| $REVIEW_DATE       | date of review               |
-| $PRODUCT_ID        | id of the product            |
-| $ORDER_ID          | order related to the review  |
-| $ORDER_DATE        | date of the order            |
-| $REPLY             | reply of the review          |
-| $REPLY_DATE        | reply date                   |
+| Variable        | Description                       |
+|-----------------|-----------------------------------|
+| $ID             | id of your review                 |
+| $SITE_REVIEW_ID | guaranteed opinion site review id |
+| $NAME           | name of the reviewer              |
+| $RATE           | score                             |
+| $REVIEW         | review message                    |
+| $REVIEW_DATE    | date of review                    |
+| $ORDER_ID       | order related to the review       |
+| $ORDER_DATE     | date of the order                 |
+| $REPLY          | reply of the review               |
+| $REPLY_DATE     | reply date                        |
+
+[guaranteed_product_loop]
+
+### Input arguments
+
+| Argument     | Description                       |
+|--------------|-----------------------------------|
+| **min_rate** | minimum score allowed. (min 0)    |
+| **product**  | id of your product                |
+| **limit**    | limit for pagination. (default 5) |
+| **page**     | page for pagination. (default 0)  |
+
+### Output arguments
+
+| Variable           | Description                          |
+|--------------------|--------------------------------------|
+| $ID                | id of your review                    |
+| $PRODUCT_REVIEW_ID | guaranteed opinion product review id |
+| $NAME              | name of the reviewer                 |
+| $RATE              | score                                |
+| $REVIEW            | review message                       |
+| $REVIEW_DATE       | date of review                       |
+| $PRODUCT_ID        | id of the product                    |
+| $ORDER_ID          | order related to the review          |
+| $ORDER_DATE        | date of the order                    |
+| $REPLY             | reply of the review                  |
+| $REPLY_DATE        | reply date                           |
 
 ## Documentations
 

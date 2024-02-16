@@ -96,4 +96,10 @@ class GuaranteedOpinion extends BaseModule
         );
         $logger->addAlert("MESSAGE => " . print_r($msg, true));
     }
+
+    public function postActivation(ConnectionInterface $con = null): void
+    {
+        self::setConfigValue(self::SITE_REVIEW_HOOK_DISPLAY, 'main.content-bottom');
+        self::setConfigValue(self::PRODUCT_REVIEW_HOOK_DISPLAY, 'product.bottom');
+    }
 }

@@ -109,7 +109,7 @@ class ConfigurationForm extends BaseForm
                 "site_review_hook_display",
                 TextType::class,
                 [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_HOOK_DISPLAY) ?: "main.content-bottom",
+                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_HOOK_DISPLAY),
                     "label"=>$translator->trans("Site review hook display", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false,
                 ]
@@ -123,7 +123,7 @@ class ConfigurationForm extends BaseForm
                 "product_review_hook_display",
                 TextType::class,
                 [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_HOOK_DISPLAY) ?: "product.bottom",
+                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_HOOK_DISPLAY),
                     "label"=>$translator->trans("Product review hook display", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false,
                 ]

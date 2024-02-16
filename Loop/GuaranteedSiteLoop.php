@@ -3,6 +3,7 @@
 namespace GuaranteedOpinion\Loop;
 
 use GuaranteedOpinion\Model\GuaranteedOpinionProductReviewQuery;
+use GuaranteedOpinion\Model\GuaranteedOpinionSiteReviewQuery;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Thelia\Core\Template\Element\BaseLoop;
@@ -14,9 +15,10 @@ use Thelia\Core\Template\Loop\Argument\ArgumentCollection;
 
 /**
  * @method getMinRate()
- * @method getProduct()
+ * @method getPage()
+ * @method getLimit()
  */
-class GuaranteedProductLoop extends BaseLoop implements PropelSearchLoopInterface
+class GuaranteedSiteLoop extends BaseLoop implements PropelSearchLoopInterface
 {
     public function parseResults(LoopResult $loopResult): LoopResult
     {
@@ -25,12 +27,11 @@ class GuaranteedProductLoop extends BaseLoop implements PropelSearchLoopInterfac
 
             $loopResultRow
                 ->set('ID', $review->getId())
-                ->set('PRODUCT_REVIEW_ID', $review->getProductReviewId())
+                ->set('PRODUCT_REVIEW_ID', $review->getSiteReviewId())
                 ->set('NAME', $review->getName())
                 ->set('RATE', $review->getRate())
                 ->set('REVIEW', $review->getReview())
                 ->set('REVIEW_DATE', $review->getReviewDate()?->format('Y-m-d'))
-                ->set('PRODUCT_ID', $review->getProductId())
                 ->set('ORDER_ID', $review->getOrderId())
                 ->set('ORDER_DATE', $review->getOrderDate()?->format('Y-m-d'))
                 ->set('REPLY', $review->getReply())
@@ -46,11 +47,7 @@ class GuaranteedProductLoop extends BaseLoop implements PropelSearchLoopInterfac
 
     public function buildModelCriteria(): GuaranteedOpinionProductReviewQuery|ModelCriteria
     {
-        $search = GuaranteedOpinionProductReviewQuery::create();
-
-        if (null !== $productId = $this->getProduct()) {
-            $search->filterByProductId($productId);
-        }
+        $search = GuaranteedOpinionSiteReviewQuery::create();
 
         if (null !== $minRate = $this->getMinRate()) {
             $search->filterByRate($minRate, Criteria::GREATER_EQUAL);
@@ -66,7 +63,6 @@ class GuaranteedProductLoop extends BaseLoop implements PropelSearchLoopInterfac
     protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
-            Argument::createIntTypeArgument('product'),
             Argument::createIntTypeArgument('min_rate'),
             Argument::createIntTypeArgument('limit', 5),
             Argument::createIntTypeArgument('page', 0)
