@@ -28,5 +28,22 @@
         <column name="status" type="INTEGER" />
     </table>
 
+    <table name="guaranteed_opinion_site_review" namespace="GuaranteedOpinion\Model">
+        <column autoIncrement="true" name="id" primaryKey="true" type="INTEGER" required="true" />
+        <column name="site_review_id" primaryKey="true" type="INTEGER" required="true" />
+        <column name="name" type="VARCHAR" size="255" />
+        <column defaultValue="0" name="rate" scale="1" size="2" type="DECIMAL"/>
+        <column name="review" size="10000" sqlType="VARBINARY(10000)" type="VARCHAR"/>
+        <column name="review_date" type="TIMESTAMP"/>
+        <column name="order_id" type="VARCHAR" size="255"/>
+        <column name="order_date" type="TIMESTAMP"/>
+        <column name="reply" type="VARCHAR" size="255"/>
+        <column name="reply_date" type="TIMESTAMP"/>
+
+        <unique name="guaranteed_opinion_site_review_id_unique">
+            <unique-column name="site_review_id"/>
+        </unique>
+    </table>
+
   <external-schema filename="local/config/schema.xml" referenceOnly="true" />
 </database>

@@ -17,13 +17,13 @@ class ProductReviewService
         }
     }
 
-    public function addGuaranteedOpinionProductRow($row, int $productId): void
+    public function addGuaranteedOpinionProductRow($row, int $productId): bool
     {
         $review = GuaranteedOpinionProductReviewQuery::create()
             ->findOneByProductReviewId($row->id);
 
         if (null !== $review) {
-            return;
+            return false;
         }
 
         $review = new GuaranteedOpinionProductReview();
@@ -51,7 +51,10 @@ class ProductReviewService
 
         } catch (PropelException $e) {
             GuaranteedOpinion::log($e->getMessage());
+            return false;
         }
+
+        return true;
     }
 
     /**
