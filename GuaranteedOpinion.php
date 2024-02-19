@@ -99,6 +99,13 @@ class GuaranteedOpinion extends BaseModule
 
     public function postActivation(ConnectionInterface $con = null): void
     {
+        $database = new Database($con);
+
+        if (!self::getConfigValue('is_initialized', false)) {
+            $database->insertSql(null, [__DIR__ . "/Config/TheliaMain.sql"]);
+            self::setConfigValue('is_initialized', true);
+        }
+
         self::setConfigValue(self::SITE_REVIEW_HOOK_DISPLAY, 'main.content-bottom');
         self::setConfigValue(self::PRODUCT_REVIEW_HOOK_DISPLAY, 'product.bottom');
     }
