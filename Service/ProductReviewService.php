@@ -3,6 +3,8 @@
 namespace GuaranteedOpinion\Service;
 
 use GuaranteedOpinion\GuaranteedOpinion;
+use GuaranteedOpinion\Model\GuaranteedOpinionProductRating;
+use GuaranteedOpinion\Model\GuaranteedOpinionProductRatingQuery;
 use GuaranteedOpinion\Model\GuaranteedOpinionProductReview;
 use GuaranteedOpinion\Model\GuaranteedOpinionProductReviewQuery;
 use Propel\Runtime\Exception\PropelException;
@@ -20,7 +22,7 @@ class ProductReviewService
     public function addGuaranteedOpinionProductRow($row, int $productId): bool
     {
         $review = GuaranteedOpinionProductReviewQuery::create()
-            ->findOneByProductReviewId($row->id);
+            ->findOneByProductReviewId($row['id']);
 
         if (null !== $review) {
             return false;
@@ -30,20 +32,20 @@ class ProductReviewService
 
         try {
             $review
-                ->setProductReviewId($row->id)
-                ->setName($row->c)
-                ->setReview($row->txt)
-                ->setReviewDate($row->date)
-                ->setRate($row->r)
-                ->setOrderId($row->o)
-                ->setOrderDate($row->odate)
+                ->setProductReviewId($row['id'])
+                ->setName($row['c'])
+                ->setReview($row['txt'])
+                ->setReviewDate($row['date'])
+                ->setRate($row['r'])
+                ->setOrderId($row['o'])
+                ->setOrderDate($row['odate'])
                 ->setProductId($productId)
             ;
 
-            if ($row->reply !== "" && $row->rdate !== "") {
+            if ($row['reply'] !== "" && $row['rdate'] !== "") {
                 $review
-                    ->setReply($row->reply)
-                    ->setReplyDate($row->rdate)
+                    ->setReply($row['reply'])
+                    ->setReplyDate($row['rdate'])
                 ;
             }
 
@@ -97,5 +99,21 @@ class ProductReviewService
         } else {
             $result = $data;
         }
+    }
+
+    /**
+     * @throws PropelException
+     */
+    public function addGuaranteedOpinionProductRating(int $productId, array $ratings): void
+    {
+        if (null === $productRating = GuaranteedOpinionProductRatingQuery::create()->findOneByProductId($productId)) {
+            $productRating = new GuaranteedOpinionProductRating();
+        }
+
+        $productRating
+            ->setProductId($productId)
+            ->setTotal($ratings['total'])
+            ->setAverage($ratings['average'])
+            ->save();
     }
 }

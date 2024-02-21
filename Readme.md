@@ -61,12 +61,12 @@ No need to import your site opinion, you only need to use the widget and widget 
 
 ### Input arguments
 
-| Argument     | Description                       |
-|--------------|-----------------------------------|
-| **min_rate** | minimum score allowed. (min 0)    |
-| **product**  | id of your product                |
-| **limit**    | limit for pagination. (default 5) |
-| **page**     | page for pagination. (default 0)  |
+| Argument     | Description                             |
+|--------------|-----------------------------------------|
+| **min_rate** | minimum score allowed. (min 0)          |
+| **product**  | id of your product                      |
+| **limit**    | limit for pagination. (default 5)       |
+| **page**     | offset/page for pagination. (default 0) |
 
 ### Output arguments
 

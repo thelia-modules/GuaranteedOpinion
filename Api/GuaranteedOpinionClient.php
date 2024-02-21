@@ -12,7 +12,10 @@
 
 namespace GuaranteedOpinion\Api;
 
+use Exception;
 use GuaranteedOpinion\GuaranteedOpinion;
+use JsonException;
+use RuntimeException;
 
 /**
  * Class GuaranteedOpinionClient
@@ -31,11 +34,12 @@ class GuaranteedOpinionClient
      *
      * @param string $scope 'site' or productId
      * @return array
-     * @throws \JsonException
+     * @throws JsonException
+     * @throws RuntimeException
      */
     public function getReviewsFromApi(string $scope = 'site'): array
     {
-        $url = self::URL_API . "/" . self::URL_API_REVIEW . "/" . GuaranteedOpinion::getConfigValue(GuaranteedOpinion::CONFIG_API_REVIEW) . "/" . $scope;
+        $url = self::URL_API . "/" . self::URL_API_REVIEW . "/" . GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY) . "/" . $scope;
 
         $ch = curl_init($url);
 
@@ -45,18 +49,24 @@ class GuaranteedOpinionClient
 
         curl_close($ch);
 
-        return json_decode($response, false, 512, JSON_THROW_ON_ERROR)->reviews;
+        $jsonResponse = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
+
+        if (isset($jsonResponse['data']) && $jsonResponse['data'] !== 200) {
+            throw new RuntimeException($jsonResponse['message']);
+        }
+
+        return $jsonResponse;
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function sendOrder($jsonOrder)
     {
         $url = self::URL_API . "/" . self::URL_API_ORDER;
 
         $request = [
-            'api_key' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::CONFIG_API_ORDER),
+            'api_key' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY),
             'orders' => $jsonOrder
         ];
 

@@ -37,10 +37,12 @@ class GetProductReviewCommand extends ContainerAwareCommand
             $output->write("Product Review synchronization start \n");
             foreach ($products as $product)
             {
-                $productReviews = $this->client->getReviewsFromApi($product->getId());
+                $apiResponse = $this->client->getReviewsFromApi($product->getId());
 
-                if ($productReviews !== []) {
-                    foreach ($productReviews as $productRow) {
+                if ($apiResponse['reviews'] !== []) {
+                    $this->productReviewService->addGuaranteedOpinionProductRating($product->getId(), $apiResponse['ratings']);
+
+                    foreach ($apiResponse['reviews'] as $productRow) {
                         if ($rowsTreated % 100 === 0) {
                             $output->write("Rows treated : " . $rowsTreated . "\n");
                         }

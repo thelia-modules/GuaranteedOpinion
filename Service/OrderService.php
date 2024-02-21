@@ -5,7 +5,9 @@ namespace GuaranteedOpinion\Service;
 use GuaranteedOpinion\GuaranteedOpinion;
 use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueue;
 use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueueQuery;
+use JsonException;
 use Propel\Runtime\Exception\PropelException;
+use RuntimeException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Thelia\Model\OrderProduct;
 use Thelia\Model\OrderQuery;
@@ -18,26 +20,28 @@ class OrderService
     ) {}
 
     /**
-     * @throws \JsonException
+     * @throws JsonException|RuntimeException|PropelException
      */
-    public function prepareOrderRequest()
+    public function prepareOrderRequest(): string
     {
-        $guaranteedOpinionOrders = GuaranteedOpinionOrderQueueQuery::create()->find();
-
-        if ($guaranteedOpinionOrders === null)
-        {
-            return;
-        }
-
         $jsonOrder = [];
+
+        $guaranteedOpinionOrders = GuaranteedOpinionOrderQueueQuery::create()->find();
 
         foreach ($guaranteedOpinionOrders as $guaranteedOpinionOrder) {
             $jsonOrder[] = $this->orderToJsonObject($guaranteedOpinionOrder);
         }
 
+        if (empty($jsonOrder)) {
+            throw new RuntimeException('No Order found');
+        }
+
         return json_encode($jsonOrder, JSON_THROW_ON_ERROR);
     }
 
+    /**
+     * @throws PropelException
+     */
     private function orderToJsonObject(GuaranteedOpinionOrderQueue $guaranteedOpinionOrder): array
     {
         $order = OrderQuery::create()->findOneById($guaranteedOpinionOrder->getOrderId());
@@ -50,7 +54,7 @@ class OrderService
 
         return [
             'id_order' => $order?->getId(),
-            'order_date' => $order?->getCreatedAt()->format('Y-m-d H:i:s'),
+            'order_date' => $order?->getCreatedAt()?->format('Y-m-d H:i:s'),
             'firstname' => $order?->getCustomer()->getFirstname(),
             'lastname' => $order?->getCustomer()->getLastname(),
             'email' => $order?->getCustomer()->getEmail(),
@@ -59,9 +63,14 @@ class OrderService
         ];
     }
 
+    /**
+     * @throws PropelException
+     */
     private function productToJsonObject(OrderProduct $orderProduct): array
     {
-        $pse = ProductSaleElementsQuery::create()->findOneById($orderProduct->getProductSaleElementsId());
+        if (null === $pse = ProductSaleElementsQuery::create()->findOneById($orderProduct->getProductSaleElementsId())) {
+            return [];
+        }
 
         $category  = GuaranteedOpinionOrderQueueQuery::getCategoryByProductSaleElements($pse);
 
@@ -76,7 +85,7 @@ class OrderService
             'ean13' => $pse?->getEanCode(),
             'sku' => null,
             'upc' => null,
-            'url' => GuaranteedOpinion::STORE_URL . '/'.
+            'url' => GuaranteedOpinion::STORE_URL_CONFIG_KEY . '/'.
                 GuaranteedOpinionOrderQueueQuery::getProductUrl($pse?->getProductId())->getUrl(),
         ];
     }

@@ -14,24 +14,28 @@ class GuaranteedOpinion extends BaseModule
     /** @var string */
     public const DOMAIN_NAME = 'guaranteedopinion';
 
-    public const CONFIG_API_REVIEW = "guaranteedopinion.api.review";
-    public const CONFIG_API_ORDER = "guaranteedopinion.api.order";
+    public const API_REVIEW_CONFIG_KEY = "guaranteedopinion.api.review";
+    public const API_ORDER_CONFIG_KEY = "guaranteedopinion.api.order";
 
-    public const STATUS_TO_EXPORT = "guaranteedopinion.status_to_export";
-    public const EMAIL_DELAY = "guaranteedopinion.email_delay";
-    public const STORE_URL = "guaranteedopinion.store_url";
+    public const STATUS_TO_EXPORT_CONFIG_KEY = "guaranteedopinion.status_to_export";
+    public const EMAIL_DELAY_CONFIG_KEY = "guaranteedopinion.email_delay";
+    public const STORE_URL_CONFIG_KEY = "guaranteedopinion.store_url";
 
-    public const SHOW_RATING_URL = "guaranteedopinion.show_rating_url";
+    public const SHOW_RATING_URL_CONFIG_KEY = "guaranteedopinion.show_rating_url";
 
-    public const SITE_REVIEW_DISPLAY = "guaranteedopinion.site_review_display";
-    public const SITE_REVIEW_HOOK_DISPLAY = "guaranteedopinion.site_review_hook_display";
+    public const SITE_REVIEW_DISPLAY_CONFIG_KEY = "guaranteedopinion.site_review_display";
+    public const SITE_REVIEW_HOOK_DISPLAY_CONFIG_KEY = "guaranteedopinion.site_review_hook_display";
 
-    public const SITE_REVIEW_WIDGET = "guaranteedopinion.site_review_widget";
-    public const SITE_REVIEW_WIDGET_IFRAME = "guaranteedopinion.site_review_widget_iframe";
+    public const SITE_REVIEW_WIDGET_CONFIG_KEY = "guaranteedopinion.site_review_widget";
+    public const SITE_REVIEW_WIDGET_IFRAME_CONFIG_KEY = "guaranteedopinion.site_review_widget_iframe";
 
-    public const PRODUCT_REVIEW_DISPLAY = "guaranteedopinion.product_review_display";
-    public const PRODUCT_REVIEW_HOOK_DISPLAY = "guaranteedopinion.product_review_hook_display";
-    public const PRODUCT_REVIEW_TAB_DISPLAY = "guaranteedopinion.product_review_tab_display";
+    public const PRODUCT_REVIEW_DISPLAY_CONFIG_KEY = "guaranteedopinion.product_review_display";
+    public const PRODUCT_REVIEW_HOOK_DISPLAY_CONFIG_KEY = "guaranteedopinion.product_review_hook_display";
+    public const PRODUCT_REVIEW_TAB_DISPLAY_CONFIG_KEY = "guaranteedopinion.product_review_tab_display";
+
+    public const SITE_RATING_TOTAL_CONFIG_KEY = "guaranteedopinion.site_rating_total";
+    public const SITE_RATING_AVERAGE_CONFIG_KEY = "guaranteedopinion.site_rating_average";
+
     /*
      * You may now override BaseModuleInterface methods, such as:
      * install, destroy, preActivation, postActivation, preDeactivation, postDeactivation
@@ -106,7 +110,7 @@ class GuaranteedOpinion extends BaseModule
             self::setConfigValue('is_initialized', true);
         }
 
-        self::setConfigValue(self::SITE_REVIEW_HOOK_DISPLAY, 'main.content-bottom');
-        self::setConfigValue(self::PRODUCT_REVIEW_HOOK_DISPLAY, 'product.bottom');
+        self::setConfigValue(self::SITE_REVIEW_HOOK_DISPLAY_CONFIG_KEY, 'main.content-bottom');
+        self::setConfigValue(self::PRODUCT_REVIEW_HOOK_DISPLAY_CONFIG_KEY, 'product.bottom');
     }
 }

@@ -24,7 +24,7 @@ class SiteReviewService
     public function addGuaranteedOpinionSiteRow($row): bool
     {
         $review = GuaranteedOpinionSiteReviewQuery::create()
-            ->findOneBySiteReviewId($row->id);
+            ->findOneBySiteReviewId($row["id"]);
 
         if (null !== $review) {
             return false;
@@ -34,19 +34,19 @@ class SiteReviewService
             $review = new GuaranteedOpinionSiteReview();
 
             $review
-                ->setSiteReviewId($row->id)
-                ->setName($row->c)
-                ->setReview($row->txt)
-                ->setReviewDate($row->date)
-                ->setRate($row->r)
-                ->setOrderId($row->o)
-                ->setOrderDate($row->odate)
+                ->setSiteReviewId($row["id"])
+                ->setName($row["c"])
+                ->setReview($row["txt"])
+                ->setReviewDate($row["date"])
+                ->setRate($row["r"])
+                ->setOrderId($row["o"])
+                ->setOrderDate($row["odate"])
             ;
 
-            if ($row->reply !== "" && $row->rdate !== "") {
+            if ($row["reply"] !== "" && $row["rdate"] !== "") {
                 $review
-                    ->setReply($row->reply)
-                    ->setReplyDate($row->rdate)
+                    ->setReply($row["reply"])
+                    ->setReplyDate($row["rdate"])
                 ;
             }
 
