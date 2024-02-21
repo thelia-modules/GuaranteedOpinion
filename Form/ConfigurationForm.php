@@ -41,36 +41,36 @@ class ConfigurationForm extends BaseForm
 
         /** @var OrderStatus $item */
         foreach ($list as $item) {
-            $item->setLocale($this->getRequest()->getSession()->getLang()->getLocale());
+            $item->setLocale($this->getRequest()->getSession()?->getLang()->getLocale());
             $orderStatus[$item->getTitle()] = $item->getId();
         }
 
         $this->formBuilder
             /* API */
             ->add("api_key_review", TextType::class, array(
-                "label" => $translator->trans("Api key review", [], GuaranteedOpinion::DOMAIN_NAME),
+                "label" => $translator?->trans("Api key review", [], GuaranteedOpinion::DOMAIN_NAME),
                 "label_attr" => ["for" => "api_key_review"],
                 "required" => true,
                 "constraints" => array(
                     new NotBlank(),
                 ),
-                "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::CONFIG_API_REVIEW)
+                "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY)
             ))
             ->add("api_key_order", TextType::class, array(
-                "label" => $translator->trans("Api key order", [], GuaranteedOpinion::DOMAIN_NAME),
+                "label" => $translator?->trans("Api key order", [], GuaranteedOpinion::DOMAIN_NAME),
                 "label_attr" => ["for" => "api_key_order"],
                 "required" => true,
                 "constraints" => array(
                     new NotBlank(),
                 ),
-                "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::CONFIG_API_ORDER)
+                "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY)
             ))
             ->add(
                 'store_url',
                 TextType::class,
                 [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STORE_URL),
-                    "label"=>$translator->trans("Store url", array(), GuaranteedOpinion::DOMAIN_NAME),
+                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STORE_URL_CONFIG_KEY),
+                    "label"=>$translator?->trans("Store url", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false,
                 ]
             )
@@ -78,8 +78,8 @@ class ConfigurationForm extends BaseForm
                 'email_delay',
                 TextType::class,
                 [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::EMAIL_DELAY, 10),
-                    "label"=>$translator->trans("Reviews email delay (in days):", array(), GuaranteedOpinion::DOMAIN_NAME),
+                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::EMAIL_DELAY_CONFIG_KEY, 10),
+                    "label"=>$translator?->trans("Reviews email delay (in days):", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false
                 ]
             )
@@ -87,8 +87,8 @@ class ConfigurationForm extends BaseForm
                 'show_rating_url',
                 TextType::class,
                 [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SHOW_RATING_URL) ?: "https://www.societe-des-avis-garantis.fr/",
-                    "label"=>Translator::getInstance()->trans("Show all opinions url", array(), GuaranteedOpinion::DOMAIN_NAME),
+                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SHOW_RATING_URL_CONFIG_KEY) ?: "https://www.societe-des-avis-garantis.fr/",
+                    "label"=>$translator?->trans("Show all opinions url", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false
                 ]
             )
@@ -96,8 +96,8 @@ class ConfigurationForm extends BaseForm
                 'status_to_export',
                 ChoiceType::class,
                 [
-                    "data" => explode(',', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT)),
-                    "label"=>$translator->trans("Order status to export", array(), GuaranteedOpinion::DOMAIN_NAME),
+                    "data" => explode(',', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT_CONFIG_KEY)),
+                    "label"=>$translator?->trans("Order status to export", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false,
                     'multiple' => true,
                     'choices'  => $orderStatus
@@ -109,41 +109,41 @@ class ConfigurationForm extends BaseForm
                 "site_review_hook_display",
                 TextType::class,
                 [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_HOOK_DISPLAY),
-                    "label"=>$translator->trans("Site review hook display", array(), GuaranteedOpinion::DOMAIN_NAME),
+                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_HOOK_DISPLAY_CONFIG_KEY),
+                    "label"=>$translator?->trans("Site review hook display", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false,
                 ]
             )
             ->add("site_review_display", CheckboxType::class, array(
-                "label" => $translator->trans("Show site review", [], GuaranteedOpinion::DOMAIN_NAME),
-                "data" => (bool)GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_DISPLAY, true),
+                "label" => $translator?->trans("Show site review", [], GuaranteedOpinion::DOMAIN_NAME),
+                "data" => (bool)GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_DISPLAY_CONFIG_KEY, true),
                 'required' => false
             ))
             ->add(
                 "product_review_hook_display",
                 TextType::class,
                 [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_HOOK_DISPLAY),
-                    "label"=>$translator->trans("Product review hook display", array(), GuaranteedOpinion::DOMAIN_NAME),
+                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_HOOK_DISPLAY_CONFIG_KEY),
+                    "label"=>$translator?->trans("Product review hook display", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false,
                 ]
             )
             ->add("product_review_display", CheckboxType::class, array(
-                "label" => $translator->trans("Show product review", [], GuaranteedOpinion::DOMAIN_NAME),
-                "data" => (bool)GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_DISPLAY, true),
+                "label" => $translator?->trans("Show product review", [], GuaranteedOpinion::DOMAIN_NAME),
+                "data" => (bool)GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_DISPLAY_CONFIG_KEY, true),
                 'required' => false
             ))
             ->add("product_review_tab_display", CheckboxType::class, array(
-                "label" => $translator->trans("Show product review tab", [], GuaranteedOpinion::DOMAIN_NAME),
-                "data" => (bool)GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_TAB_DISPLAY, true),
+                "label" => $translator?->trans("Show product review tab", [], GuaranteedOpinion::DOMAIN_NAME),
+                "data" => (bool)GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_TAB_DISPLAY_CONFIG_KEY, true),
                 'required' => false
             ))
             ->add(
                 "site_review_widget",
                 TextareaType::class,
                 [
-                    "data" => htmlspecialchars_decode(GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_WIDGET)),
-                    "label"=>$translator->trans("Site review widget code", array(), GuaranteedOpinion::DOMAIN_NAME),
+                    "data" => htmlspecialchars_decode(GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_WIDGET_CONFIG_KEY)),
+                    "label"=>$translator?->trans("Site review widget code", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false,
                 ]
             )
@@ -151,8 +151,8 @@ class ConfigurationForm extends BaseForm
                 "site_review_widget_iframe",
                 TextareaType::class,
                 [
-                    "data" => htmlspecialchars_decode(GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_WIDGET_IFRAME)),
-                    "label"=>$translator->trans("Site review widget iframe code", array(), GuaranteedOpinion::DOMAIN_NAME),
+                    "data" => htmlspecialchars_decode(GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_WIDGET_IFRAME_CONFIG_KEY)),
+                    "label"=>$translator?->trans("Site review widget iframe code", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false,
                 ]
             )

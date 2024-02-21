@@ -4,6 +4,7 @@ namespace GuaranteedOpinion\Command;
 
 use Exception;
 use GuaranteedOpinion\Api\GuaranteedOpinionClient;
+use GuaranteedOpinion\GuaranteedOpinion;
 use GuaranteedOpinion\Service\SiteReviewService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,7 +31,12 @@ class GetSiteReviewCommand extends ContainerAwareCommand
         $siteReviewsAdded = 0;
 
         try {
-            $siteReviews = $this->client->getReviewsFromApi();
+            $apiResponse = $this->client->getReviewsFromApi();
+
+            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SITE_RATING_TOTAL_CONFIG_KEY, $apiResponse['ratings']['total']);
+            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SITE_RATING_AVERAGE_CONFIG_KEY, $apiResponse['ratings']['average']);
+
+            $siteReviews = $apiResponse['reviews'];
 
             $output->write("Site Review synchronization start \n");
 
@@ -44,6 +50,7 @@ class GetSiteReviewCommand extends ContainerAwareCommand
             }
         } catch (Exception $exception) {
             $output->write($exception->getMessage());
+            return 0;
         }
 
         $output->write("End of Site Review synchronization\n");

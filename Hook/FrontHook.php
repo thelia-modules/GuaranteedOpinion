@@ -14,11 +14,11 @@ class FrontHook extends BaseHook
     public static function getSubscribedHooks(): array
     {
         return [
-            GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_HOOK_DISPLAY) => [
+            GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_HOOK_DISPLAY_CONFIG_KEY) => [
                 "type" => "front",
                 "method" => "displaySiteWidget"
             ],
-            GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_HOOK_DISPLAY) => [
+            GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_HOOK_DISPLAY_CONFIG_KEY) => [
                 "type" => "front",
                 "method" => "displayProductWidget"
             ],
@@ -31,7 +31,7 @@ class FrontHook extends BaseHook
 
     public function displaySiteWidget(HookRenderEvent $event): void
     {
-        if (!GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_DISPLAY)) {
+        if (!GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_DISPLAY_CONFIG_KEY)) {
             return;
         }
 
@@ -40,9 +40,9 @@ class FrontHook extends BaseHook
                 "site/site-review.html",
                 [
                     "site_reviews_widget" => htmlspecialchars_decode(
-                        GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_WIDGET)),
+                        GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_WIDGET_CONFIG_KEY)),
                     "site_reviews_widget_iframe" => htmlspecialchars_decode(
-                        GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_WIDGET_IFRAME)),
+                        GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_WIDGET_IFRAME_CONFIG_KEY)),
                 ]
             )
         );
@@ -50,7 +50,7 @@ class FrontHook extends BaseHook
 
     public function displayProductTab(HookRenderBlockEvent $event): void
     {
-        if (!GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_TAB_DISPLAY)) {
+        if (!GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_TAB_DISPLAY_CONFIG_KEY)) {
             return;
         }
 
@@ -68,7 +68,7 @@ class FrontHook extends BaseHook
                 "product/product-review-tab.html",
                 [
                     "product_reviews" => $productReviews,
-                    "show_rating_url" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SHOW_RATING_URL),
+                    "show_rating_url" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SHOW_RATING_URL_CONFIG_KEY),
                 ]
             )
         ]);
@@ -76,7 +76,7 @@ class FrontHook extends BaseHook
 
     public function displayProductWidget(HookRenderEvent $event): void
     {
-        if (!GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_DISPLAY)) {
+        if (!GuaranteedOpinion::getConfigValue(GuaranteedOpinion::PRODUCT_REVIEW_DISPLAY_CONFIG_KEY)) {
             return;
         }
 
@@ -89,7 +89,7 @@ class FrontHook extends BaseHook
             $this->render(
                 "product/product-review.html", [
                     "product_reviews" => $productReviews,
-                    "show_rating_url" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SHOW_RATING_URL),
+                    "show_rating_url" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SHOW_RATING_URL_CONFIG_KEY),
                 ]
             )
         );

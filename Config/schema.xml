@@ -45,5 +45,11 @@
         </unique>
     </table>
 
+    <table name="guaranteed_opinion_product_rating" namespace="GuaranteedOpinion\Model">
+        <column name="product_id" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="total" type="INTEGER" />
+        <column name="average" type="VARCHAR" />
+    </table>
+
   <external-schema filename="local/config/schema.xml" referenceOnly="true" />
 </database>

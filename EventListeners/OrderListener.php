@@ -2,6 +2,7 @@
 
 namespace GuaranteedOpinion\EventListeners;
 
+use DateTime;
 use GuaranteedOpinion\GuaranteedOpinion;
 use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueue;
 use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueueQuery;
@@ -11,7 +12,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
-use Thelia\Model\OrderStatusQuery;
 
 class OrderListener implements EventSubscriberInterface
 {
@@ -32,7 +32,7 @@ class OrderListener implements EventSubscriberInterface
             return;
         }
 
-        $orderStatuses = explode(',', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT));
+        $orderStatuses = explode(',', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT_CONFIG_KEY));
 
         foreach ($orderStatuses as $orderStatus)
         {
@@ -42,7 +42,7 @@ class OrderListener implements EventSubscriberInterface
 
                 $guaranteedOpinionOrderQueue
                     ->setOrderId($orderEvent->getOrder()->getId())
-                    ->setTreatedAt(new \DateTime(''))
+                    ->setTreatedAt(new DateTime(''))
                     ->setStatus($status)
                 ;
 
