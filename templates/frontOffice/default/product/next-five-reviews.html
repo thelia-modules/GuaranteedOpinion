@@ -1,0 +1,12 @@
+{loop type="guaranteed_product_loop" name="guaranteed_product" product=199 page=$page|default:2}
+  {include 
+    file="includes/commentCopy.html" 
+    index=$LOOP_COUNT - 1 
+    review=[
+      rate => $RATE,
+      name => $NAME,
+      date => $REVIEW_DATE,
+      message => $REVIEW
+    ]
+  }
+{/loop}
