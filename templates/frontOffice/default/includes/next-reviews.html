@@ -1,0 +1,8 @@
+{foreach $reviews as $review}
+  <div>
+    <div>{$review->name}</div>
+    <div>{$review->date}</div>
+    <div>{$review->rating}</div>
+    <p>{$review->message}</p>
+  </div>
+{/foreach}
