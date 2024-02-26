@@ -24,7 +24,7 @@ class FrontController extends BaseFrontController
 
         $siteReviews = GuaranteedOpinionSiteReviewQuery::create()
             ->setLimit($limit)
-            ->setOffset($limit * ($offset -1))
+            ->setOffset($offset)
             ->find()
         ;
 
@@ -58,7 +58,7 @@ class FrontController extends BaseFrontController
         $productReviews = GuaranteedOpinionProductReviewQuery::create()
             ->filterByProductId($id)
             ->setLimit($limit)
-            ->setOffset($limit * ($offset -1))
+            ->setOffset($offset)
             ->find();
 
         foreach ($productReviews as $review) {

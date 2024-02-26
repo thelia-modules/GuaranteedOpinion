@@ -23,12 +23,21 @@ To import your product opinion :
 php Thelia module:GuaranteedOpinion:GetProductReview
 ```
 
+To import your site opinion :
+```
+php Thelia module:GuaranteedOpinion:GetProductReview
+```
+(Note: If you are using Avis Garantis widget and widget iframe, you don't need to import your site opinion)
+
 To export your order :
 ```
 php Thelia module:GuaranteedOpinion:SendOrder
 ```
 
-No need to import your site opinion, you only need to use the widget and widget iframe
+Now you can add these routes to your opinion page or use the loop
+
+- ```/site_reviews/offset/{offset}/limit/{limit}```
+- ```/product_reviews/{id}/offset/{offset}/limit/{limit}```
 
 ## Loop
 
