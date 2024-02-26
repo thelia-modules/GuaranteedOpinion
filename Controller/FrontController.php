@@ -10,70 +10,91 @@ use Propel\Runtime\Exception\PropelException;
 use Symfony\Component\Routing\Annotation\Route;
 use Thelia\Controller\Front\BaseFrontController;
 use Thelia\Core\HttpFoundation\JsonResponse;
+use Thelia\Core\HttpFoundation\Request;
+use Thelia\Core\HttpFoundation\Response;
 
 #[Route(path: "/guaranteed_opinion", name: "guaranteed_opinion")]
 class FrontController extends BaseFrontController
 {
-    /**
-     * @throws PropelException
-     */
-    #[Route(path: "/site_reviews/offset/{offset}/limit/{limit}", name: "site_reviews", methods: "GET")]
-    public function siteReviews(int $offset, int $limit): JsonResponse
-    {
-        $reviews = [];
+  /**
+   * @throws PropelException
+   */
+  #[Route(path: "/site_reviews/offset/{offset}/limit/{limit}", name: "site_reviews", methods: "GET")]
+  public function siteReviews(int $offset, int $limit, Request $request): JsonResponse
+  {
+    $reviews = [];
 
-        $siteReviews = GuaranteedOpinionSiteReviewQuery::create()
-            ->setLimit($limit)
-            ->setOffset($offset)
-            ->find()
-        ;
+    $siteReviews = GuaranteedOpinionSiteReviewQuery::create()
+      ->setLimit($limit)
+      ->setOffset($offset)
+      ->find();
 
-        foreach ($siteReviews as $review) {
-            $reviews[] = [
-                'rate' => $review->getRate(),
-                'name' => $review->getName(),
-                'date' => $review->getReviewDate()?->format('Y-m-d'),
-                'message' => $review->getReview()
-            ];
-        }
-
-        return new JsonResponse([
-            'total' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_TOTAL_CONFIG_KEY),
-            'average' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_AVERAGE_CONFIG_KEY),
-            'reviews' => $reviews
-        ]);
+    foreach ($siteReviews as $review) {
+      $reviews[] = [
+        'rate' => $review->getRate(),
+        'name' => $review->getName(),
+        'date' => $review->getReviewDate()?->format('Y-m-d'),
+        'message' => $review->getReview()
+      ];
     }
 
-    /**
-     * @throws PropelException
-     */
-    #[Route(path: "/product_reviews/{id}/offset/{offset}/limit/{limit}", name: "product_reviews", methods: "GET")]
-    public function productReviews(int $id, int $offset, int $limit): JsonResponse
-    {
-        $reviews = [];
+    $responseData = [
+      'total' => $productRating?->getTotal(),
+      'average' => $productRating?->getAverage(),
+      'reviews' => $reviews
+    ];
 
-        $productRating = GuaranteedOpinionProductRatingQuery::create()
-            ->findOneByProductId($id);
+    if ($request->headers->get('Accept') === 'text/html') {
+      $response = $this->render('includes/next-site-reviews', $responseData, count($reviews) > 0 ? Response::HTTP_OK : Response::HTTP_NO_CONTENT);
 
-        $productReviews = GuaranteedOpinionProductReviewQuery::create()
-            ->filterByProductId($id)
-            ->setLimit($limit)
-            ->setOffset($offset)
-            ->find();
+      $response->headers->set('X-Remaining-Reviews', $responseData["total"] - $offset - $limit);
 
-        foreach ($productReviews as $review) {
-            $reviews[] = [
-                'rate' => $review->getRate(),
-                'name' => $review->getName(),
-                'date' => $review->getReviewDate()?->format('Y-m-d'),
-                'message' => $review->getReview()
-            ];
-        }
-
-        return new JsonResponse([
-            'total' => $productRating?->getTotal(),
-            'average' => $productRating?->getAverage(),
-            'reviews' => $reviews
-        ]);
+      return $response;
     }
+
+    return new JsonResponse($responseData);
+  }
+
+  /**
+   * @throws PropelException
+   */
+  #[Route(path: "/product_reviews/{id}/offset/{offset}/limit/{limit}", name: "product_reviews", methods: "GET")]
+  public function productReviews(int $id, int $offset, int $limit, Request $request): JsonResponse|Response
+  {
+    $reviews = [];
+
+    $productRating = GuaranteedOpinionProductRatingQuery::create()
+      ->findOneByProductId($id);
+
+    $productReviews = GuaranteedOpinionProductReviewQuery::create()
+      ->filterByProductId($id)
+      ->setLimit($limit)
+      ->setOffset($offset)
+      ->find();
+
+    foreach ($productReviews as $review) {
+      $reviews[] = [
+        'rate' => $review->getRate(),
+        'name' => $review->getName(),
+        'date' => $review->getReviewDate()?->format('Y-m-d'),
+        'message' => $review->getReview()
+      ];
+    }
+
+    $responseData = [
+      'total' => $productRating?->getTotal(),
+      'average' => $productRating?->getAverage(),
+      'reviews' => $reviews
+    ];
+
+    if ($request->headers->get('Accept') === 'text/html') {
+      $response = $this->render('includes/next-product-reviews', $responseData, count($reviews) > 0 ? Response::HTTP_OK : Response::HTTP_NO_CONTENT);
+
+      $response->headers->set('X-Remaining-Reviews', $responseData["total"] - $offset - $limit);
+
+      return $response;
+    }
+
+    return new JsonResponse($responseData);
+  }
 }

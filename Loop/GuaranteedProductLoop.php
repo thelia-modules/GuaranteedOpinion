@@ -34,8 +34,7 @@ class GuaranteedProductLoop extends BaseLoop implements PropelSearchLoopInterfac
                 ->set('ORDER_ID', $review->getOrderId())
                 ->set('ORDER_DATE', $review->getOrderDate()?->format('Y-m-d'))
                 ->set('REPLY', $review->getReply())
-                ->set('REPLY_DATE', $review->getReplyDate()?->format('Y-m-d'))
-            ;
+                ->set('REPLY_DATE', $review->getReplyDate()?->format('Y-m-d'));
             $this->addOutputFields($loopResultRow, $review);
 
             $loopResult->addRow($loopResultRow);
@@ -56,8 +55,8 @@ class GuaranteedProductLoop extends BaseLoop implements PropelSearchLoopInterfac
             $search->filterByRate($minRate, Criteria::GREATER_EQUAL);
         }
 
-        if ((null !== $page = $this->getPage()) && (null !== $limit = $this->getLimit())) {
-            $search->paginate($page, $limit);
+        if ((null !== $offset = $this->getOffset()) && (null !== $limit = $this->getLimit())) {
+            $search->setOffset($offset)->setLimit($limit);
         }
 
         return $search;
@@ -68,8 +67,8 @@ class GuaranteedProductLoop extends BaseLoop implements PropelSearchLoopInterfac
         return new ArgumentCollection(
             Argument::createIntTypeArgument('product'),
             Argument::createIntTypeArgument('min_rate'),
-            Argument::createIntTypeArgument('limit', 5),
-            Argument::createIntTypeArgument('page', 0)
+            Argument::createIntTypeArgument('limit', null),
+            Argument::createIntTypeArgument('offset', 0)
         );
     }
 }
