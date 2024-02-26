@@ -38,11 +38,21 @@ class FrontController extends BaseFrontController
       ];
     }
 
-    return new JsonResponse([
-      'total' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_TOTAL_CONFIG_KEY),
-      'average' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_AVERAGE_CONFIG_KEY),
+    $responseData = [
+      'total' => $productRating?->getTotal(),
+      'average' => $productRating?->getAverage(),
       'reviews' => $reviews
-    ]);
+    ];
+
+    if ($request->headers->get('Accept') === 'text/html') {
+      $response = $this->render('includes/next-site-reviews', $responseData, count($reviews) > 0 ? Response::HTTP_OK : Response::HTTP_NO_CONTENT);
+
+      $response->headers->set('X-Remaining-Reviews', $responseData["total"] - $offset - $limit);
+
+      return $response;
+    }
+
+    return new JsonResponse($responseData);
   }
 
   /**
@@ -78,7 +88,7 @@ class FrontController extends BaseFrontController
     ];
 
     if ($request->headers->get('Accept') === 'text/html') {
-      $response = $this->render('includes/next-reviews', $responseData, count($reviews) > 0 ? Response::HTTP_OK : Response::HTTP_NO_CONTENT);
+      $response = $this->render('includes/next-product-reviews', $responseData, count($reviews) > 0 ? Response::HTTP_OK : Response::HTTP_NO_CONTENT);
 
       $response->headers->set('X-Remaining-Reviews', $responseData["total"] - $offset - $limit);
 
