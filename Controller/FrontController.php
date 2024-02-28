@@ -20,7 +20,7 @@ class FrontController extends BaseFrontController
    * @throws PropelException
    */
   #[Route(path: "/site_reviews/offset/{offset}/limit/{limit}", name: "site_reviews", methods: "GET")]
-  public function siteReviews(int $offset, int $limit, Request $request): JsonResponse
+  public function siteReviews(int $offset, int $limit, Request $request): JsonResponse|Response
   {
     $reviews = [];
 
@@ -39,8 +39,8 @@ class FrontController extends BaseFrontController
     }
 
     $responseData = [
-      'total' => $productRating?->getTotal(),
-      'average' => $productRating?->getAverage(),
+      'total' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_TOTAL_CONFIG_KEY),
+      'average' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_AVERAGE_CONFIG_KEY),
       'reviews' => $reviews
     ];
 
