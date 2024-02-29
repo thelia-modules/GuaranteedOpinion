@@ -52,7 +52,7 @@
 <section class="guaranteed_opinion_product_container">
     {if !empty($product_reviews[0]) }
         <div class="guaranteed_opinion_product_title">
-            <h2>{intl l="Lastest customer reviews" d="guaranteedopinion.fo.module"} </h2>
+            <h2>{intl l="Lastest customer reviews" d="guaranteedopinion.fo.default"} </h2>
         </div>
 
         <ul class="guaranteed_review_list">
@@ -65,7 +65,7 @@
                     <span>{$rating->getName()} </span>
                 </div>
                 <div class="guaranteed_opinion_date">
-                    {intl l="The" d="guaranteedopinion.fo.module"} {$rating->getReviewDate()|date_format:"%d/%m/%Y"}
+                    {intl l="The" d="guaranteedopinion.fo.default"} {$rating->getReviewDate()|date_format:"%d/%m/%Y"}
                 </div>
                 <div class="guaranteed_opinion_review_text">{$rating->getReview()|truncate:190:"..."}</div>
             </li>
@@ -73,11 +73,11 @@
         </ul>
 
         <div class="guaranteed_opinion_product_show_all_btn">
-            <a href="{$show_rating_url}" target="_blank">{intl l="Show all reviews" d="guaranteedopinion.fo.module"}</a>
+            <a href="{$show_rating_url}" target="_blank">{intl l="Show all reviews" d="guaranteedopinion.fo.default"}</a>
         </div>
     {else}
         <div class="guaranteed_opinion_product_title">
-            <h2>{intl l="No Reviews for this product" d="guaranteedopinion.fo.module"}</h2>
+            <h2>{intl l="No Reviews for this product" d="guaranteedopinion.fo.default"}</h2>
         </div>
     {/if}
 </section>
