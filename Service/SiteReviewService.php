@@ -59,4 +59,23 @@ class SiteReviewService
 
         return true;
     }
+
+    /**
+     * @throws PropelException
+     */
+    public function formatSiteReviews($reviews): array
+    {
+        $tabReviews = [];
+
+        /** @var GuaranteedOpinionSiteReview $review */
+        foreach ($reviews as $key => $review) {
+            $tabReviews[$key]['rate'] = $review->getRate();
+            $tabReviews[$key]['review_date'] = $review->getReviewDate();
+            $tabReviews[$key]['name'] = $review->getName();
+            $tabReviews[$key]['order_date'] = $review->getOrderDate();
+            $tabReviews[$key]['review'] = $review->getReview();
+        }
+
+        return $tabReviews;
+    }
 }
