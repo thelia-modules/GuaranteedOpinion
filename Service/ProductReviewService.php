@@ -116,4 +116,20 @@ class ProductReviewService
             ->setAverage($ratings['average'])
             ->save();
     }
+
+    public function formatProductReviews($reviews): array
+    {
+        $tabReviews = [];
+
+        /** @var GuaranteedOpinionProductReview $review */
+        foreach ($reviews as $key => $review) {
+            $tabReviews[$key]['rate'] = $review->getRate();
+            $tabReviews[$key]['review_date'] = $review->getReviewDate();
+            $tabReviews[$key]['name'] = $review->getName();
+            $tabReviews[$key]['order_date'] = $review->getOrderDate();
+            $tabReviews[$key]['review'] = $review->getReview();
+        }
+
+        return $tabReviews;
+    }
 }
