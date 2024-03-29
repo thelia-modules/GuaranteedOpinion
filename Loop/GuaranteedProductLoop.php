@@ -59,6 +59,8 @@ class GuaranteedProductLoop extends BaseLoop implements PropelSearchLoopInterfac
             $search->setOffset($offset)->setLimit($limit);
         }
 
+        $search->orderByReviewDate(Criteria::DESC);
+
         return $search;
     }
 
