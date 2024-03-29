@@ -56,6 +56,8 @@ class GuaranteedSiteLoop extends BaseLoop implements PropelSearchLoopInterface
             $search->setOffset($offset)->setLimit($limit);
         }
 
+        $search->orderByReviewDate(Criteria::DESC);
+
         return $search;
     }
 
