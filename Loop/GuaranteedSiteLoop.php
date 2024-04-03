@@ -52,10 +52,6 @@ class GuaranteedSiteLoop extends BaseLoop implements PropelSearchLoopInterface
             $search->filterByRate($minRate, Criteria::GREATER_EQUAL);
         }
 
-        if ((null !== $offset = $this->getOffset()) && (null !== $limit = $this->getLimit())) {
-            $search->setOffset($offset)->setLimit($limit);
-        }
-
         $search->orderByReviewDate(Criteria::DESC);
 
         return $search;
@@ -64,9 +60,7 @@ class GuaranteedSiteLoop extends BaseLoop implements PropelSearchLoopInterface
     protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
-            Argument::createIntTypeArgument('min_rate'),
-            Argument::createIntTypeArgument('limit', null),
-            Argument::createIntTypeArgument('offset', 0)
+            Argument::createIntTypeArgument('min_rate')
         );
     }
 }
