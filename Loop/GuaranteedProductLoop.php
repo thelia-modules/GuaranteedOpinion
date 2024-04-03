@@ -55,10 +55,6 @@ class GuaranteedProductLoop extends BaseLoop implements PropelSearchLoopInterfac
             $search->filterByRate($minRate, Criteria::GREATER_EQUAL);
         }
 
-        if ((null !== $offset = $this->getOffset()) && (null !== $limit = $this->getLimit())) {
-            $search->setOffset($offset)->setLimit($limit);
-        }
-
         $search->orderByReviewDate(Criteria::DESC);
 
         return $search;
@@ -68,9 +64,7 @@ class GuaranteedProductLoop extends BaseLoop implements PropelSearchLoopInterfac
     {
         return new ArgumentCollection(
             Argument::createIntTypeArgument('product'),
-            Argument::createIntTypeArgument('min_rate'),
-            Argument::createIntTypeArgument('limit', null),
-            Argument::createIntTypeArgument('offset', 0)
+            Argument::createIntTypeArgument('min_rate')
         );
     }
 }
