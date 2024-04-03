@@ -2,6 +2,8 @@
 
 namespace GuaranteedOpinion\Service;
 
+use GuaranteedOpinion\Event\GuaranteedOpinionEvents;
+use GuaranteedOpinion\Event\ProductReviewEvent;
 use GuaranteedOpinion\GuaranteedOpinion;
 use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueue;
 use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueueQuery;
@@ -73,9 +75,11 @@ class OrderService
         }
 
         $category  = GuaranteedOpinionOrderQueueQuery::getCategoryByProductSaleElements($pse);
+        $productReviewEvent = new ProductReviewEvent($pse?->getProduct());
+        $this->eventDispatcher->dispatch($productReviewEvent, GuaranteedOpinionEvents::SEND_ORDER_PRODUCT_EVENT);
 
         return [
-            'id' => $pse?->getProductId(),
+            'id' => $productReviewEvent->getGuaranteedOpinionProductId(),
             'name' => $pse?->getProduct()->getRef(),
             'category_id' => $category->getId(),
             'category_name' => $category->getTitle(),

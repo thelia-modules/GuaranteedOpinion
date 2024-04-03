@@ -4,6 +4,8 @@ namespace GuaranteedOpinion\Command;
 
 use Exception;
 use GuaranteedOpinion\Api\GuaranteedOpinionClient;
+use GuaranteedOpinion\Event\ProductReviewEvent;
+use GuaranteedOpinion\Event\GuaranteedOpinionEvents;
 use GuaranteedOpinion\Service\ProductReviewService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -37,7 +39,10 @@ class GetProductReviewCommand extends ContainerAwareCommand
             $output->write("Product Review synchronization start \n");
             foreach ($products as $product)
             {
-                $apiResponse = $this->client->getReviewsFromApi($product->getId());
+                $addProductReviewEvent = new ProductReviewEvent($product);
+                $this->getDispatcher()->dispatch($addProductReviewEvent, GuaranteedOpinionEvents::ADD_PRODUCT_REVIEW_EVENT);
+
+                $apiResponse = $this->client->getReviewsFromApi($addProductReviewEvent->getGuaranteedOpinionProductId());
 
                 if ($apiResponse['reviews'] !== []) {
                     $this->productReviewService->addGuaranteedOpinionProductRating($product->getId(), $apiResponse['ratings']);
