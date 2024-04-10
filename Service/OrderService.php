@@ -28,7 +28,7 @@ class OrderService
     {
         $jsonOrder = [];
 
-        $guaranteedOpinionOrders = GuaranteedOpinionOrderQueueQuery::create()->find();
+        $guaranteedOpinionOrders = GuaranteedOpinionOrderQueueQuery::create()->filterByTreatedAt(null)->findByStatus(0);
 
         foreach ($guaranteedOpinionOrders as $guaranteedOpinionOrder) {
             $jsonOrder[] = $this->orderToJsonObject($guaranteedOpinionOrder);
@@ -97,12 +97,18 @@ class OrderService
     /**
      * @throws PropelException
      */
-    public function clearOrderQueueTable(): void
+    public function setOrdersAsSend(): void
     {
-        $orders = GuaranteedOpinionOrderQueueQuery::create()->find();
+        $orders = GuaranteedOpinionOrderQueueQuery::create()
+            ->filterByTreatedAt(null)
+            ->findByStatus(0);
 
         foreach ($orders as $order) {
-            $order->delete();
+            $order
+                ->setTreatedAt(new \DateTime())
+                ->setStatus(1);
+
+            $order->save();
         }
     }
 }
