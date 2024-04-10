@@ -48,8 +48,7 @@ class SendOrderCommand extends ContainerAwareCommand
 
             if ($response->success === 1)
             {
-                $this->orderService->clearOrderQueueTable();
-                $output->write("Order Queue is now empty\n");
+                $this->orderService->setOrdersAsSend();
             }
         } catch (Exception $exception) {
             $output->write($exception->getMessage());

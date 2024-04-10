@@ -23,38 +23,52 @@ class OrderListener implements EventSubscriberInterface
     /**
      * @throws PropelException
      */
-    public function sendOrderToQueue(OrderEvent $orderEvent): void
+    public function registerOrder(OrderEvent $event): void
     {
-        $request = $this->requestStack->getCurrentRequest()->request;
+        $statusToExport = explode(',', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT_CONFIG_KEY, '4'));
 
-        if (null !== GuaranteedOpinionOrderQueueQuery::create()->findOneByOrderId($orderEvent->getOrder()->getId()))
-        {
-            return;
+        if (in_array($event->getPlacedOrder()->getStatusId(), $statusToExport, false)) {
+            $guaranteedReviewsOrderQueue = new GuaranteedOpinionOrderQueue();
+            $guaranteedReviewsOrderQueue->setOrderId($event->getPlacedOrder()->getId())
+                ->setStatus(0)
+                ->setTreatedAt(new DateTime(''))
+                ->save()
+            ;
         }
+    }
 
-        $orderStatuses = explode(',', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT_CONFIG_KEY));
+    /**
+     * @param OrderEvent $event
+     * @throws PropelException
+     */
+    public function checkOrderInQueue(OrderEvent $event): void
+    {
+        $statusToExport = explode(',', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT_CONFIG_KEY, '4'));
 
-        foreach ($orderStatuses as $orderStatus)
-        {
-            if ($orderStatus === $status = $request->get('status_id'))
-            {
-                $guaranteedOpinionOrderQueue = new GuaranteedOpinionOrderQueue();
+        $newStatus = $event->getOrder()->getStatusId();
+        $orderId = $event->getOrder()->getId();
 
-                $guaranteedOpinionOrderQueue
-                    ->setOrderId($orderEvent->getOrder()->getId())
-                    ->setTreatedAt(new DateTime(''))
-                    ->setStatus($status)
-                ;
+        $guaranteedReviewsOrderQueue = GuaranteedOpinionOrderQueueQuery::create()
+            ->filterByOrderId($orderId)
+            ->findOne();
 
-                $guaranteedOpinionOrderQueue->save();
+        if (null !== $guaranteedReviewsOrderQueue) {
+            if (!in_array($newStatus, $statusToExport, false) && (int)$guaranteedReviewsOrderQueue->getStatus() === 0){
+                $guaranteedReviewsOrderQueue->delete();
             }
+        } else if (in_array($newStatus, $statusToExport, false)){
+            $guaranteedReviewsOrderQueue = new GuaranteedOpinionOrderQueue();
+            $guaranteedReviewsOrderQueue->setOrderId($orderId)
+                ->setStatus(0)
+                ->save();
         }
     }
 
     public static function getSubscribedEvents(): array
     {
         return array(
-            TheliaEvents::ORDER_UPDATE_STATUS => ["sendOrderToQueue", 192]
+            TheliaEvents::ORDER_UPDATE_STATUS => ["checkOrderInQueue", 64],
+            TheliaEvents::ORDER_PAY => ['registerOrder', 64],
         );
     }
 }
