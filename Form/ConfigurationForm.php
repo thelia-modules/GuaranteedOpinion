@@ -66,15 +66,6 @@ class ConfigurationForm extends BaseForm
                 "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY)
             ))
             ->add(
-                'store_url',
-                TextType::class,
-                [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STORE_URL_CONFIG_KEY),
-                    "label"=>$translator?->trans("Store url", array(), GuaranteedOpinion::DOMAIN_NAME),
-                    "required" => false,
-                ]
-            )
-            ->add(
                 'email_delay',
                 TextType::class,
                 [
