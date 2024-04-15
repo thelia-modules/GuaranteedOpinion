@@ -26,7 +26,6 @@ class GuaranteedOpinionConfigController extends BaseAdminController
             GuaranteedOpinion::setConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY, $data["api_key_order"]);
             GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SHOW_RATING_URL_CONFIG_KEY, $data["show_rating_url"]);
 
-            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::STORE_URL_CONFIG_KEY, $data["store_url"]);
             GuaranteedOpinion::setConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT_CONFIG_KEY, implode(',', $data["status_to_export"]));
             GuaranteedOpinion::setConfigValue(GuaranteedOpinion::EMAIL_DELAY_CONFIG_KEY, $data["email_delay"]);
 

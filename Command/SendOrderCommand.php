@@ -27,6 +27,8 @@ class SendOrderCommand extends ContainerAwareCommand
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->initRequest();
+
         try {
             $order = $this->orderService->prepareOrderRequest();
 

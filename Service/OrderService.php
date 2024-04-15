@@ -14,6 +14,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Thelia\Model\OrderProduct;
 use Thelia\Model\OrderQuery;
 use Thelia\Model\ProductSaleElementsQuery;
+use Thelia\Tools\URL;
 
 class OrderService
 {
@@ -89,7 +90,7 @@ class OrderService
             'ean13' => $pse?->getEanCode(),
             'sku' => null,
             'upc' => null,
-            'url' => GuaranteedOpinion::STORE_URL_CONFIG_KEY . '/'.
+            'url' => URL::getInstance()->absoluteUrl('') .
                 GuaranteedOpinionOrderQueueQuery::getProductUrl($pse?->getProductId())->getUrl(),
         ];
     }
