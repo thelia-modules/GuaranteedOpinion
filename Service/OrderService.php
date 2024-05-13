@@ -25,14 +25,14 @@ class OrderService
     /**
      * @throws JsonException|RuntimeException|PropelException
      */
-    public function prepareOrderRequest(): string
+    public function prepareOrderRequest(string $locale): string
     {
         $jsonOrder = [];
 
         $guaranteedOpinionOrders = GuaranteedOpinionOrderQueueQuery::create()->filterByTreatedAt(null)->findByStatus(0);
 
         foreach ($guaranteedOpinionOrders as $guaranteedOpinionOrder) {
-            $jsonOrder[] = $this->orderToJsonObject($guaranteedOpinionOrder);
+            $jsonOrder[] = $this->orderToJsonObject($guaranteedOpinionOrder, $locale);
         }
 
         if (empty($jsonOrder)) {
@@ -45,14 +45,14 @@ class OrderService
     /**
      * @throws PropelException
      */
-    private function orderToJsonObject(GuaranteedOpinionOrderQueue $guaranteedOpinionOrder): array
+    private function orderToJsonObject(GuaranteedOpinionOrderQueue $guaranteedOpinionOrder, string $locale): array
     {
         $order = OrderQuery::create()->findOneById($guaranteedOpinionOrder->getOrderId());
 
         $jsonProduct = [];
 
         foreach ($order?->getOrderProducts() as $orderProduct) {
-            $jsonProduct[] = $this->productToJsonObject($orderProduct);
+            $jsonProduct[] = $this->productToJsonObject($orderProduct, $locale);
         }
 
         return [
@@ -69,7 +69,7 @@ class OrderService
     /**
      * @throws PropelException
      */
-    private function productToJsonObject(OrderProduct $orderProduct): array
+    private function productToJsonObject(OrderProduct $orderProduct, string $locale): array
     {
         if (null === $pse = ProductSaleElementsQuery::create()->findOneById($orderProduct->getProductSaleElementsId())) {
             return [];
@@ -91,7 +91,7 @@ class OrderService
             'sku' => null,
             'upc' => null,
             'url' => URL::getInstance()->absoluteUrl('') .
-                GuaranteedOpinionOrderQueueQuery::getProductUrl($pse->getProductId())->getUrl(),
+                GuaranteedOpinionOrderQueueQuery::getProductUrl($pse->getProductId(), $locale)->getUrl(),
         ];
     }
 
