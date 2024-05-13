@@ -30,11 +30,13 @@ class GuaranteedOpinionOrderQueueQuery extends BaseGuaranteedOpinionOrderQueueQu
             ->findOne();
     }
 
-    public static function getProductUrl(int $id): RewritingUrl
+    public static function getProductUrl(int $id, string $locale = 'fr_FR'): RewritingUrl
     {
         return RewritingUrlQuery::create()
             ->filterByView('product')
             ->filterByViewId($id)
+            ->filterByViewLocale($locale)
+            ->filterByRedirected()
             ->findOne();
     }
 }

@@ -76,22 +76,22 @@ class OrderService
         }
 
         $category  = GuaranteedOpinionOrderQueueQuery::getCategoryByProductSaleElements($pse);
-        $productReviewEvent = new ProductReviewEvent($pse?->getProduct());
+        $productReviewEvent = new ProductReviewEvent($pse->getProduct());
         $this->eventDispatcher->dispatch($productReviewEvent, GuaranteedOpinionEvents::SEND_ORDER_PRODUCT_EVENT);
 
         return [
             'id' => $productReviewEvent->getGuaranteedOpinionProductId(),
-            'name' => $pse?->getProduct()->getRef(),
+            'name' => $pse->getProduct()->getRef(),
             'category_id' => $category->getId(),
             'category_name' => $category->getTitle(),
             'qty' => $orderProduct->getQuantity(),
             'unit_price' => $orderProduct->getPrice(),
             'mpn' => null,
-            'ean13' => $pse?->getEanCode(),
+            'ean13' => $pse->getEanCode(),
             'sku' => null,
             'upc' => null,
             'url' => URL::getInstance()->absoluteUrl('') .
-                GuaranteedOpinionOrderQueueQuery::getProductUrl($pse?->getProductId())->getUrl(),
+                GuaranteedOpinionOrderQueueQuery::getProductUrl($pse->getProductId())->getUrl(),
         ];
     }
 
