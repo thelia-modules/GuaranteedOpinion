@@ -5,7 +5,6 @@ return array(
     'Api key review' => 'Clé API publique des avis',
     'Order status to export' => 'Statut des commandes à envoyer',
     'Product review hook display' => 'Lien du hook des avis des produits',
-    'Reviews email delay (in days):' => 'Delai de l\'envoi du mail (en jours)',
     'Show all opinions url' => 'Url des avis vérifiés du sites',
     'Show product review' => 'Montrer les avis des produits',
     'Show product review tab' => 'Montrer le tableau des avis des produits',

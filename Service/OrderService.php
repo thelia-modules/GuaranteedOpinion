@@ -25,14 +25,14 @@ class OrderService
     /**
      * @throws JsonException|RuntimeException|PropelException
      */
-    public function prepareOrderRequest(): string
+    public function prepareOrderRequest(string $locale): string
     {
         $jsonOrder = [];
 
         $guaranteedOpinionOrders = GuaranteedOpinionOrderQueueQuery::create()->filterByTreatedAt(null)->findByStatus(0);
 
         foreach ($guaranteedOpinionOrders as $guaranteedOpinionOrder) {
-            $jsonOrder[] = $this->orderToJsonObject($guaranteedOpinionOrder);
+            $jsonOrder[] = $this->orderToJsonObject($guaranteedOpinionOrder, $locale);
         }
 
         if (empty($jsonOrder)) {
@@ -45,14 +45,14 @@ class OrderService
     /**
      * @throws PropelException
      */
-    private function orderToJsonObject(GuaranteedOpinionOrderQueue $guaranteedOpinionOrder): array
+    private function orderToJsonObject(GuaranteedOpinionOrderQueue $guaranteedOpinionOrder, string $locale): array
     {
         $order = OrderQuery::create()->findOneById($guaranteedOpinionOrder->getOrderId());
 
         $jsonProduct = [];
 
         foreach ($order?->getOrderProducts() as $orderProduct) {
-            $jsonProduct[] = $this->productToJsonObject($orderProduct);
+            $jsonProduct[] = $this->productToJsonObject($orderProduct, $locale);
         }
 
         return [
@@ -69,29 +69,29 @@ class OrderService
     /**
      * @throws PropelException
      */
-    private function productToJsonObject(OrderProduct $orderProduct): array
+    private function productToJsonObject(OrderProduct $orderProduct, string $locale): array
     {
         if (null === $pse = ProductSaleElementsQuery::create()->findOneById($orderProduct->getProductSaleElementsId())) {
             return [];
         }
 
         $category  = GuaranteedOpinionOrderQueueQuery::getCategoryByProductSaleElements($pse);
-        $productReviewEvent = new ProductReviewEvent($pse?->getProduct());
+        $productReviewEvent = new ProductReviewEvent($pse->getProduct());
         $this->eventDispatcher->dispatch($productReviewEvent, GuaranteedOpinionEvents::SEND_ORDER_PRODUCT_EVENT);
 
         return [
             'id' => $productReviewEvent->getGuaranteedOpinionProductId(),
-            'name' => $pse?->getProduct()->getRef(),
+            'name' => $pse->getProduct()->getRef(),
             'category_id' => $category->getId(),
             'category_name' => $category->getTitle(),
             'qty' => $orderProduct->getQuantity(),
             'unit_price' => $orderProduct->getPrice(),
             'mpn' => null,
-            'ean13' => $pse?->getEanCode(),
+            'ean13' => $pse->getEanCode(),
             'sku' => null,
             'upc' => null,
             'url' => URL::getInstance()->absoluteUrl('') .
-                GuaranteedOpinionOrderQueueQuery::getProductUrl($pse?->getProductId())->getUrl(),
+                GuaranteedOpinionOrderQueueQuery::getProductUrl($pse->getProductId(), $locale)->getUrl(),
         ];
     }
 

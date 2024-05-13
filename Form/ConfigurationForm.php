@@ -66,15 +66,6 @@ class ConfigurationForm extends BaseForm
                 "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY)
             ))
             ->add(
-                'email_delay',
-                TextType::class,
-                [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::EMAIL_DELAY_CONFIG_KEY, 10),
-                    "label"=>$translator?->trans("Reviews email delay (in days):", array(), GuaranteedOpinion::DOMAIN_NAME),
-                    "required" => false
-                ]
-            )
-            ->add(
                 'show_rating_url',
                 TextType::class,
                 [

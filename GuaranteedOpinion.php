@@ -18,7 +18,6 @@ class GuaranteedOpinion extends BaseModule
     public const API_ORDER_CONFIG_KEY = "guaranteedopinion.api.order";
 
     public const STATUS_TO_EXPORT_CONFIG_KEY = "guaranteedopinion.status_to_export";
-    public const EMAIL_DELAY_CONFIG_KEY = "guaranteedopinion.email_delay";
 
     public const SHOW_RATING_URL_CONFIG_KEY = "guaranteedopinion.show_rating_url";
 

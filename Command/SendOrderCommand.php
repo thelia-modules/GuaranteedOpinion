@@ -6,6 +6,7 @@ use Exception;
 use GuaranteedOpinion\Api\GuaranteedOpinionClient;
 use GuaranteedOpinion\Service\OrderService;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Thelia\Command\ContainerAwareCommand;
 
@@ -22,7 +23,9 @@ class SendOrderCommand extends ContainerAwareCommand
     {
         $this
             ->setName('module:GuaranteedOpinion:SendOrder')
-            ->setDescription('Send orders to API Avis-Garantis');
+            ->setDescription('Send orders to API Avis-Garantis')
+            ->addOption('locale', 'l', InputOption::VALUE_OPTIONAL, 'locale', 'fr_FR')
+        ;
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
@@ -30,7 +33,7 @@ class SendOrderCommand extends ContainerAwareCommand
         $this->initRequest();
 
         try {
-            $order = $this->orderService->prepareOrderRequest();
+            $order = $this->orderService->prepareOrderRequest($input->getOption('locale'));
 
             $response = $this->client->sendOrder($order);
 
