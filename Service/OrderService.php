@@ -78,6 +78,7 @@ class OrderService
         $category  = GuaranteedOpinionOrderQueueQuery::getCategoryByProductSaleElements($pse);
         $productReviewEvent = new ProductReviewEvent($pse->getProduct());
         $this->eventDispatcher->dispatch($productReviewEvent, GuaranteedOpinionEvents::SEND_ORDER_PRODUCT_EVENT);
+        $url = GuaranteedOpinionOrderQueueQuery::getProductUrl($pse->getProductId(), $locale)?->getUrl();
 
         return [
             'id' => $productReviewEvent->getGuaranteedOpinionProductId(),
@@ -90,8 +91,7 @@ class OrderService
             'ean13' => $pse->getEanCode(),
             'sku' => null,
             'upc' => null,
-            'url' => URL::getInstance()->absoluteUrl('') .
-                GuaranteedOpinionOrderQueueQuery::getProductUrl($pse->getProductId(), $locale)->getUrl(),
+            'url' => $url ? URL::getInstance()->absoluteUrl($url) : null
         ];
     }
 
