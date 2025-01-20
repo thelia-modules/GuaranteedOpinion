@@ -20,7 +20,7 @@ use Thelia\Model\RewritingUrlQuery;
  */
 class GuaranteedOpinionOrderQueueQuery extends BaseGuaranteedOpinionOrderQueueQuery
 {
-    public static function getCategoryByProductSaleElements(ProductSaleElements $productSaleElements): Category
+    public static function getCategoryByProductSaleElements(ProductSaleElements $productSaleElements): ?Category
     {
         return CategoryQuery::create()
             ->useProductCategoryQuery()
@@ -30,7 +30,7 @@ class GuaranteedOpinionOrderQueueQuery extends BaseGuaranteedOpinionOrderQueueQu
             ->findOne();
     }
 
-    public static function getProductUrl(int $id, string $locale = 'fr_FR'): RewritingUrl
+    public static function getProductUrl(int $id, string $locale = 'fr_FR'): ?RewritingUrl
     {
         return RewritingUrlQuery::create()
             ->filterByView('product')
