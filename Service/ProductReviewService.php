@@ -21,35 +21,32 @@ class ProductReviewService
 
     public function addGuaranteedOpinionProductRow($row, int $productId): bool
     {
-        $review = GuaranteedOpinionProductReviewQuery::create()
-            ->findOneByProductReviewId($row['id']);
-
-        if (null !== $review) {
-            return false;
-        }
-
-        $review = new GuaranteedOpinionProductReview();
-
         try {
-            $review
-                ->setProductReviewId($row['id'])
-                ->setName($row['c'])
-                ->setReview($row['txt'])
-                ->setReviewDate($row['date'])
-                ->setRate($row['r'])
-                ->setOrderId($row['o'])
-                ->setOrderDate($row['odate'])
-                ->setProductId($productId)
-            ;
+            $review = GuaranteedOpinionProductReviewQuery::create()
+                ->findOneByProductReviewId($row['id']);
+
+            if (null === $review) {
+                $review = new GuaranteedOpinionProductReview();
+                $review
+                    ->setProductReviewId($row['id'])
+                    ->setName($row['c'])
+                    ->setReview($row['txt'])
+                    ->setReviewDate($row['date'])
+                    ->setRate($row['r'])
+                    ->setOrderId($row['o'])
+                    ->setOrderDate($row['odate'])
+                    ->setProductId($productId)
+                ;
+                $review->save();
+            }
 
             if ($row['reply'] !== "" && $row['rdate'] !== "") {
                 $review
                     ->setReply($row['reply'])
                     ->setReplyDate($row['rdate'])
                 ;
+                $review->save();
             }
-
-            $review->save();
 
         } catch (PropelException $e) {
             GuaranteedOpinion::log($e->getMessage());
