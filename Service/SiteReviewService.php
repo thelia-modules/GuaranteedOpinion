@@ -23,34 +23,31 @@ class SiteReviewService
      */
     public function addGuaranteedOpinionSiteRow($row): bool
     {
-        $review = GuaranteedOpinionSiteReviewQuery::create()
-            ->findOneBySiteReviewId($row["id"]);
-
-        if (null !== $review) {
-            return false;
-        }
-
         try {
-            $review = new GuaranteedOpinionSiteReview();
+            $review = GuaranteedOpinionSiteReviewQuery::create()
+                ->findOneBySiteReviewId($row["id"]);
 
-            $review
-                ->setSiteReviewId($row["id"])
-                ->setName($row["c"])
-                ->setReview($row["txt"])
-                ->setReviewDate($row["date"])
-                ->setRate($row["r"])
-                ->setOrderId($row["o"])
-                ->setOrderDate($row["odate"])
-            ;
+            if (null === $review) {
+                $review = new GuaranteedOpinionSiteReview();
+                $review
+                    ->setSiteReviewId($row["id"])
+                    ->setName($row["c"])
+                    ->setReview($row["txt"])
+                    ->setReviewDate($row["date"])
+                    ->setRate($row["r"])
+                    ->setOrderId($row["o"])
+                    ->setOrderDate($row["odate"])
+                ;
+                $review->save();
+            }
 
             if ($row["reply"] !== "" && $row["rdate"] !== "") {
                 $review
                     ->setReply($row["reply"])
                     ->setReplyDate($row["rdate"])
                 ;
+                $review->save();
             }
-
-            $review->save();
 
         } catch (PropelException $e) {
             GuaranteedOpinion::log($e->getMessage());
