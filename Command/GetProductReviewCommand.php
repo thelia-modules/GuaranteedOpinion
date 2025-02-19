@@ -36,7 +36,7 @@ class GetProductReviewCommand extends ContainerAwareCommand
         $rowsTreated = 0;
 
         try {
-            $products = ProductQuery::create()->filterById(6365)->find();
+            $products = ProductQuery::create()->findByVisible(1);
 
             $output->write("Product Review synchronization start \n");
             foreach ($products as $product)
