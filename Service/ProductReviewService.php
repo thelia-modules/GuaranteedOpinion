@@ -33,7 +33,7 @@ class ProductReviewService
                     ->setReview($row['txt'])
                     ->setReviewDate($row['date'])
                     ->setRate($row['r'])
-                    ->setOrderId($row['o'])
+                    ->setOrderId($row['o'] ?? null)
                     ->setOrderDate($row['odate'])
                     ->setProductId($productId)
                 ;
