@@ -20,6 +20,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
+use Thelia\Model\LangQuery;
 use Thelia\Model\OrderStatus;
 use Thelia\Model\OrderStatusQuery;
 
@@ -34,10 +35,15 @@ class ConfigurationForm extends BaseForm
     {
         $translator = Translator::getInstance();
 
+        $locale = LangQuery::create()->findOneByByDefault(1)->getLocale();
+
+        if ($editLanguageId = $this->getRequest()->query->get('edit_language_id')) {
+            $locale = LangQuery::create()->findOneById($editLanguageId)->getLocale();
+        }
+
         $orderStatus = [];
 
-        $list = OrderStatusQuery::create()
-            ->find();
+        $list = OrderStatusQuery::create()->find();
 
         /** @var OrderStatus $item */
         foreach ($list as $item) {
@@ -54,7 +60,7 @@ class ConfigurationForm extends BaseForm
                 "constraints" => array(
                     new NotBlank(),
                 ),
-                "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY)
+                "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY, null, $locale)
             ))
             ->add("api_key_order", TextType::class, array(
                 "label" => $translator?->trans("Api key order", [], GuaranteedOpinion::DOMAIN_NAME),
@@ -63,13 +69,13 @@ class ConfigurationForm extends BaseForm
                 "constraints" => array(
                     new NotBlank(),
                 ),
-                "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY)
+                "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY, null, $locale)
             ))
             ->add(
                 'show_rating_url',
                 TextType::class,
                 [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SHOW_RATING_URL_CONFIG_KEY) ?: "https://www.societe-des-avis-garantis.fr/",
+                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SHOW_RATING_URL_CONFIG_KEY, GuaranteedOpinion::MAPPING_DEFAULT_URL[$locale] ?? null, $locale),
                     "label"=>$translator?->trans("Show all opinions url", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false
                 ]

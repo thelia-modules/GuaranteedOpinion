@@ -7,6 +7,7 @@ use GuaranteedOpinion\Api\GuaranteedOpinionClient;
 use GuaranteedOpinion\GuaranteedOpinion;
 use GuaranteedOpinion\Service\SiteReviewService;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Thelia\Command\ContainerAwareCommand;
 
@@ -23,7 +24,9 @@ class GetSiteReviewCommand extends ContainerAwareCommand
     {
         $this
             ->setName('module:GuaranteedOpinion:GetSiteReview')
-            ->setDescription('Get site review from API Avis-Garantis');
+            ->setDescription('Get site review from API Avis-Garantis')
+            ->addOption('locale', 'l', InputOption::VALUE_OPTIONAL, 'locale', 'fr_FR')
+        ;
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
@@ -31,7 +34,9 @@ class GetSiteReviewCommand extends ContainerAwareCommand
         $siteReviewsAdded = 0;
 
         try {
-            $apiResponse = $this->client->getReviewsFromApi();
+            $locale = $input->getOption('locale');
+
+            $apiResponse = $this->client->getReviewsFromApi('site', $locale);
 
             GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SITE_RATING_TOTAL_CONFIG_KEY, $apiResponse['ratings']['total']);
             GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SITE_RATING_AVERAGE_CONFIG_KEY, $apiResponse['ratings']['average']);
@@ -44,7 +49,7 @@ class GetSiteReviewCommand extends ContainerAwareCommand
                 if ($key % 100 === 0) {
                     $output->write("Rows treated : " . $key . "\n");
                 }
-                if ($this->siteReviewService->addGuaranteedOpinionSiteRow($siteRow)) {
+                if ($this->siteReviewService->addGuaranteedOpinionSiteRow($siteRow, $locale)) {
                     $siteReviewsAdded ++;
                 }
             }

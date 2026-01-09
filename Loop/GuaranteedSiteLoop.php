@@ -12,11 +12,13 @@ use Thelia\Core\Template\Element\LoopResultRow;
 use Thelia\Core\Template\Element\PropelSearchLoopInterface;
 use Thelia\Core\Template\Loop\Argument\Argument;
 use Thelia\Core\Template\Loop\Argument\ArgumentCollection;
+use Thelia\Model\LangQuery;
 
 /**
  * @method getMinRate()
  * @method getPage()
  * @method getLimit()
+ * @method getLangId()
  */
 class GuaranteedSiteLoop extends BaseLoop implements PropelSearchLoopInterface
 {
@@ -32,7 +34,6 @@ class GuaranteedSiteLoop extends BaseLoop implements PropelSearchLoopInterface
                 ->set('RATE', $review->getRate())
                 ->set('REVIEW', $review->getReview())
                 ->set('REVIEW_DATE', $review->getReviewDate()?->format('Y-m-d'))
-                ->set('ORDER_ID', $review->getOrderId())
                 ->set('ORDER_DATE', $review->getOrderDate()?->format('Y-m-d'))
                 ->set('REPLY', $review->getReply())
                 ->set('REPLY_DATE', $review->getReplyDate()?->format('Y-m-d'));
@@ -52,6 +53,12 @@ class GuaranteedSiteLoop extends BaseLoop implements PropelSearchLoopInterface
             $search->filterByRate($minRate, Criteria::GREATER_EQUAL);
         }
 
+        if (null !== $locale = $this->getLangId()) {
+            $lang = LangQuery::create()->findOneById($locale);
+
+            $search->filterByLocale($lang->getLocale());
+        }
+
         $search->orderByReviewDate(Criteria::DESC);
 
         return $search;
@@ -60,7 +67,8 @@ class GuaranteedSiteLoop extends BaseLoop implements PropelSearchLoopInterface
     protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
-            Argument::createIntTypeArgument('min_rate')
+            Argument::createIntTypeArgument('min_rate'),
+            Argument::createAnyTypeArgument('lang_id', 1)
         );
     }
 }

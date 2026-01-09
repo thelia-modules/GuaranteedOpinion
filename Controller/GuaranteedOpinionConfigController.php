@@ -19,12 +19,14 @@ class GuaranteedOpinionConfigController extends BaseAdminController
     public function saveConfiguration(ParserContext $parserContext) : RedirectResponse|Response
     {
         $form = $this->createForm(ConfigurationForm::getName());
+        $locale = $this->getCurrentEditionLocale();
+
         try {
             $data = $this->validateForm($form)->getData();
 
-            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY, $data["api_key_review"]);
-            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY, $data["api_key_order"]);
-            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SHOW_RATING_URL_CONFIG_KEY, $data["show_rating_url"]);
+            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY, $data["api_key_review"], $locale);
+            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY, $data["api_key_order"], $locale);
+            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SHOW_RATING_URL_CONFIG_KEY, $data["show_rating_url"], $locale);
 
             GuaranteedOpinion::setConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT_CONFIG_KEY, implode(',', $data["status_to_export"]));
 

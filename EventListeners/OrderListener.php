@@ -21,6 +21,8 @@ class OrderListener implements EventSubscriberInterface
     ) {}
 
     /**
+     * Add the order in the queue if the order status is in the list of statuses to export.
+     *
      * @throws PropelException
      */
     public function registerOrder(OrderEvent $event): void
@@ -38,6 +40,9 @@ class OrderListener implements EventSubscriberInterface
     }
 
     /**
+     * Add the order in the queue if the order status is in the list of statuses to export.
+     * Remove the order from the queue if the order status is not in the list of statuses to export and the order was not sent yet.
+     *
      * @param OrderEvent $event
      * @throws PropelException
      */
@@ -55,8 +60,11 @@ class OrderListener implements EventSubscriberInterface
         if (null !== $guaranteedReviewsOrderQueue) {
             if (!in_array($newStatus, $statusToExport, false) && (int)$guaranteedReviewsOrderQueue->getStatus() === 0){
                 $guaranteedReviewsOrderQueue->delete();
+                exit();
             }
-        } else if (in_array($newStatus, $statusToExport, false)){
+        }
+
+        if (in_array($newStatus, $statusToExport, false)){
             $guaranteedReviewsOrderQueue = new GuaranteedOpinionOrderQueue();
             $guaranteedReviewsOrderQueue->setOrderId($orderId)
                 ->setStatus(0)

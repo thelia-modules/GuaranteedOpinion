@@ -4,13 +4,13 @@ namespace GuaranteedOpinion\Service;
 
 use GuaranteedOpinion\Event\GuaranteedOpinionEvents;
 use GuaranteedOpinion\Event\ProductReviewEvent;
-use GuaranteedOpinion\GuaranteedOpinion;
-use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueue;
 use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueueQuery;
 use JsonException;
 use Propel\Runtime\Exception\PropelException;
 use RuntimeException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Thelia\Model\LangQuery;
+use Thelia\Model\Order;
 use Thelia\Model\OrderProduct;
 use Thelia\Model\OrderQuery;
 use Thelia\Model\ProductSaleElementsQuery;
@@ -28,11 +28,14 @@ class OrderService
     public function prepareOrderRequest(string $locale): string
     {
         $jsonOrder = [];
+        $lang = LangQuery::create()->findOneByLocale($locale);
 
         $guaranteedOpinionOrders = GuaranteedOpinionOrderQueueQuery::create()->filterByTreatedAt(null)->findByStatus(0);
 
         foreach ($guaranteedOpinionOrders as $guaranteedOpinionOrder) {
-            $jsonOrder[] = $this->orderToJsonObject($guaranteedOpinionOrder, $locale);
+            if ($order = OrderQuery::create()->filterByLangId($lang->getId())->findOneById($guaranteedOpinionOrder->getOrderId())) {
+                $jsonOrder[] = $this->orderToJsonObject($order, $locale);
+            }
         }
 
         if (empty($jsonOrder)) {
@@ -45,23 +48,21 @@ class OrderService
     /**
      * @throws PropelException
      */
-    private function orderToJsonObject(GuaranteedOpinionOrderQueue $guaranteedOpinionOrder, string $locale): array
+    private function orderToJsonObject(Order $order, string $locale): array
     {
-        $order = OrderQuery::create()->findOneById($guaranteedOpinionOrder->getOrderId());
-
         $jsonProduct = [];
 
-        foreach ($order?->getOrderProducts() as $orderProduct) {
+        foreach ($order->getOrderProducts() as $orderProduct) {
             $jsonProduct[] = $this->productToJsonObject($orderProduct, $locale);
         }
 
         return [
-            'id_order' => $order?->getId(),
-            'order_date' => $order?->getCreatedAt()?->format('Y-m-d H:i:s'),
-            'firstname' => $order?->getCustomer()->getFirstname(),
-            'lastname' => $order?->getCustomer()->getLastname(),
-            'email' => $order?->getCustomer()->getEmail(),
-            'reference' => $order?->getRef(),
+            'id_order' => $order->getId(),
+            'order_date' => $order->getCreatedAt()?->format('Y-m-d H:i:s'),
+            'firstname' => $order->getCustomer()->getFirstname(),
+            'lastname' => $order->getCustomer()->getLastname(),
+            'email' => $order->getCustomer()->getEmail(),
+            'reference' => $order->getRef(),
             'products' => $jsonProduct
         ];
     }
