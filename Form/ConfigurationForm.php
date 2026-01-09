@@ -35,11 +35,14 @@ class ConfigurationForm extends BaseForm
     {
         $translator = Translator::getInstance();
 
-        $locale = LangQuery::create()->findOneByByDefault(1)->getLocale();
+        $lang = LangQuery::create()->findOneByByDefault(1);
 
         if ($editLanguageId = $this->getRequest()->query->get('edit_language_id')) {
-            $locale = LangQuery::create()->findOneById($editLanguageId)->getLocale();
+            $lang = LangQuery::create()->findOneById($editLanguageId);
         }
+
+        $locale = $lang->getLocale();
+        $code = strtoupper($lang->getCode());
 
         $orderStatus = [];
 
@@ -54,7 +57,7 @@ class ConfigurationForm extends BaseForm
         $this->formBuilder
             /* API */
             ->add("api_key_review", TextType::class, array(
-                "label" => $translator?->trans("Api key review", [], GuaranteedOpinion::DOMAIN_NAME),
+                "label" => $translator?->trans("Api key %code review", ["%code" => $code], GuaranteedOpinion::DOMAIN_NAME),
                 "label_attr" => ["for" => "api_key_review"],
                 "required" => true,
                 "constraints" => array(
@@ -63,7 +66,7 @@ class ConfigurationForm extends BaseForm
                 "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY, null, $locale)
             ))
             ->add("api_key_order", TextType::class, array(
-                "label" => $translator?->trans("Api key order", [], GuaranteedOpinion::DOMAIN_NAME),
+                "label" => $translator?->trans("Api key %code order", ["%code" => $code], GuaranteedOpinion::DOMAIN_NAME),
                 "label_attr" => ["for" => "api_key_order"],
                 "required" => true,
                 "constraints" => array(
@@ -76,7 +79,7 @@ class ConfigurationForm extends BaseForm
                 TextType::class,
                 [
                     "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SHOW_RATING_URL_CONFIG_KEY, GuaranteedOpinion::MAPPING_DEFAULT_URL[$locale] ?? null, $locale),
-                    "label"=>$translator?->trans("Show all opinions url", array(), GuaranteedOpinion::DOMAIN_NAME),
+                    "label"=>$translator?->trans("Show all opinions url %code", ["%code" => $code], GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false
                 ]
             )
