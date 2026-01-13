@@ -33,9 +33,11 @@ class SendOrderCommand extends ContainerAwareCommand
         $this->initRequest();
 
         try {
-            $order = $this->orderService->prepareOrderRequest($input->getOption('locale'));
+            $locale = $input->getOption('locale');
 
-            $response = $this->client->sendOrder($order);
+            $order = $this->orderService->prepareOrderRequest($locale);
+
+            $response = $this->client->sendOrder($order, $locale);
 
             if ($response->success === 1)
             {

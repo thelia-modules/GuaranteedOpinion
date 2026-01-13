@@ -20,6 +20,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
+use Thelia\Model\LangQuery;
 use Thelia\Model\OrderStatus;
 use Thelia\Model\OrderStatusQuery;
 
@@ -34,10 +35,18 @@ class ConfigurationForm extends BaseForm
     {
         $translator = Translator::getInstance();
 
+        $lang = LangQuery::create()->findOneByByDefault(1);
+
+        if ($editLanguageId = $this->getRequest()->query->get('edit_language_id')) {
+            $lang = LangQuery::create()->findOneById($editLanguageId);
+        }
+
+        $locale = $lang->getLocale();
+        $code = strtoupper($lang->getCode());
+
         $orderStatus = [];
 
-        $list = OrderStatusQuery::create()
-            ->find();
+        $list = OrderStatusQuery::create()->find();
 
         /** @var OrderStatus $item */
         foreach ($list as $item) {
@@ -48,29 +57,29 @@ class ConfigurationForm extends BaseForm
         $this->formBuilder
             /* API */
             ->add("api_key_review", TextType::class, array(
-                "label" => $translator?->trans("Api key review", [], GuaranteedOpinion::DOMAIN_NAME),
+                "label" => $translator?->trans("Api key %code review", ["%code" => $code], GuaranteedOpinion::DOMAIN_NAME),
                 "label_attr" => ["for" => "api_key_review"],
                 "required" => true,
                 "constraints" => array(
                     new NotBlank(),
                 ),
-                "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY)
+                "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY, null, $locale)
             ))
             ->add("api_key_order", TextType::class, array(
-                "label" => $translator?->trans("Api key order", [], GuaranteedOpinion::DOMAIN_NAME),
+                "label" => $translator?->trans("Api key %code order", ["%code" => $code], GuaranteedOpinion::DOMAIN_NAME),
                 "label_attr" => ["for" => "api_key_order"],
                 "required" => true,
                 "constraints" => array(
                     new NotBlank(),
                 ),
-                "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY)
+                "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY, null, $locale)
             ))
             ->add(
                 'show_rating_url',
                 TextType::class,
                 [
-                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SHOW_RATING_URL_CONFIG_KEY) ?: "https://www.societe-des-avis-garantis.fr/",
-                    "label"=>$translator?->trans("Show all opinions url", array(), GuaranteedOpinion::DOMAIN_NAME),
+                    "data" => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SHOW_RATING_URL_CONFIG_KEY, GuaranteedOpinion::MAPPING_DEFAULT_URL[$locale] ?? null, $locale),
+                    "label"=>$translator?->trans("Show all opinions url %code", ["%code" => $code], GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false
                 ]
             )

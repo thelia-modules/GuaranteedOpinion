@@ -37,9 +37,9 @@ class GuaranteedOpinionClient
      * @throws JsonException
      * @throws RuntimeException
      */
-    public function getReviewsFromApi(string $scope = 'site'): array
+    public function getReviewsFromApi(string $scope = 'site', string $locale = 'fr_FR'): array
     {
-        $url = self::URL_API . "/" . self::URL_API_REVIEW . "/" . GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY) . "/" . $scope;
+        $url = self::URL_API . "/" . self::URL_API_REVIEW . "/" . GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY, null, $locale) . "/" . $scope;
 
         $ch = curl_init($url);
 
@@ -61,12 +61,12 @@ class GuaranteedOpinionClient
     /**
      * @throws JsonException
      */
-    public function sendOrder($jsonOrder)
+    public function sendOrder($jsonOrder, $locale)
     {
         $url = self::URL_API . "/" . self::URL_API_ORDER;
 
         $request = [
-            'api_key' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY),
+            'api_key' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_ORDER_CONFIG_KEY, null, $locale),
             'orders' => $jsonOrder
         ];
 

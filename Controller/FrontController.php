@@ -24,7 +24,10 @@ class FrontController extends BaseFrontController
   {
     $reviews = [];
 
+    $locale = $request->getSession()->getLang()->getLocale();
+
     $siteReviews = GuaranteedOpinionSiteReviewQuery::create()
+      ->filterByLocale($locale)
       ->setLimit($limit)
       ->setOffset($offset)
       ->find();
@@ -62,12 +65,14 @@ class FrontController extends BaseFrontController
   public function productReviews(int $id, int $offset, int $limit, Request $request): JsonResponse|Response
   {
     $reviews = [];
+    $locale = $request->getSession()->getLang()->getLocale();
 
     $productRating = GuaranteedOpinionProductRatingQuery::create()
       ->findOneByProductId($id);
 
     $productReviews = GuaranteedOpinionProductReviewQuery::create()
       ->filterByProductId($id)
+      ->filterByLocale($locale)
       ->setLimit($limit)
       ->setOffset($offset)
       ->find();

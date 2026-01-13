@@ -9,19 +9,15 @@ use Propel\Runtime\Exception\PropelException;
 
 class SiteReviewService
 {
-    public function addGuaranteedOpinionSiteReviews($siteReviews): void
+    public function addGuaranteedOpinionSiteReviews($siteReviews, string $locale): void
     {
         foreach ($siteReviews as $siteRow)
         {
-            $this->addGuaranteedOpinionSiteRow($siteRow);
+            $this->addGuaranteedOpinionSiteRow($siteRow, $locale);
         }
     }
 
-    /**
-     * @param $row
-     * @return bool
-     */
-    public function addGuaranteedOpinionSiteRow($row): bool
+    public function addGuaranteedOpinionSiteRow(array $row, string $locale): bool
     {
         try {
             $review = GuaranteedOpinionSiteReviewQuery::create()
@@ -31,11 +27,11 @@ class SiteReviewService
                 $review = new GuaranteedOpinionSiteReview();
                 $review
                     ->setSiteReviewId($row["id"])
+                    ->setLocale($locale)
                     ->setName($row["c"])
                     ->setReview($row["txt"])
                     ->setReviewDate($row["date"])
                     ->setRate($row["r"])
-                    ->setOrderId($row["o"] ?? null)
                     ->setOrderDate($row["odate"])
                 ;
                 $review->save();

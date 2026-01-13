@@ -13,14 +13,14 @@ CREATE TABLE `guaranteed_opinion_product_review`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `product_review_id` VARCHAR(55) NOT NULL,
+    `locale` VARCHAR(5),
     `name` VARCHAR(255),
     `rate` DECIMAL(2,1) DEFAULT 0,
     `review` VARBINARY(10000),
     `review_date` DATETIME,
     `product_id` INTEGER,
-    `order_id` VARCHAR(255),
     `order_date` DATETIME,
-    `reply` VARCHAR(255),
+    `reply` VARBINARY(10000),
     `reply_date` DATETIME,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `guaranteed_opinion_product_review_id_unique` (`product_review_id`)
@@ -51,13 +51,13 @@ CREATE TABLE `guaranteed_opinion_site_review`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `site_review_id` INTEGER NOT NULL,
+    `locale` VARCHAR(5),
     `name` VARCHAR(255),
     `rate` DECIMAL(2,1) DEFAULT 0,
     `review` VARBINARY(10000),
     `review_date` DATETIME,
-    `order_id` VARCHAR(255),
     `order_date` DATETIME,
-    `reply` VARCHAR(255),
+    `reply` VARBINARY(10000),
     `reply_date` DATETIME,
     PRIMARY KEY (`id`,`site_review_id`),
     UNIQUE INDEX `guaranteed_opinion_site_review_id_unique` (`site_review_id`)

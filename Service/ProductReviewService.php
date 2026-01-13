@@ -11,15 +11,15 @@ use Propel\Runtime\Exception\PropelException;
 
 class ProductReviewService
 {
-    public function addGuaranteedOpinionProductReviews(array $productReviews, int $productId): void
+    public function addGuaranteedOpinionProductReviews(array $productReviews, int $productId, string $locale): void
     {
         foreach ($productReviews as $productRow)
         {
-            $this->addGuaranteedOpinionProductRow($productRow, $productId);
+            $this->addGuaranteedOpinionProductRow($productRow, $productId, $locale);
         }
     }
 
-    public function addGuaranteedOpinionProductRow($row, int $productId): bool
+    public function addGuaranteedOpinionProductRow($row, int $productId, string $locale): bool
     {
         try {
             $review = GuaranteedOpinionProductReviewQuery::create()
@@ -29,11 +29,11 @@ class ProductReviewService
                 $review = new GuaranteedOpinionProductReview();
                 $review
                     ->setProductReviewId($row['id'])
+                    ->setLocale($locale)
                     ->setName($row['c'])
                     ->setReview($row['txt'])
                     ->setReviewDate($row['date'])
                     ->setRate($row['r'])
-                    ->setOrderId($row['o'] ?? null)
                     ->setOrderDate($row['odate'])
                     ->setProductId($productId)
                 ;

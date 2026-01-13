@@ -9,7 +9,10 @@ use GuaranteedOpinion\Event\GuaranteedOpinionEvents;
 use GuaranteedOpinion\Model\GuaranteedOpinionProductReview;
 use GuaranteedOpinion\Model\GuaranteedOpinionProductReviewQuery;
 use GuaranteedOpinion\Service\ProductReviewService;
+use Propel\Runtime\Exception\PropelException;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Thelia\Command\ContainerAwareCommand;
 use Thelia\Model\ProductQuery;
@@ -27,7 +30,9 @@ class GetProductReviewCommand extends ContainerAwareCommand
     {
         $this
             ->setName('module:GuaranteedOpinion:GetProductReview')
-            ->setDescription('Get product review from API Avis-Garantis');
+            ->setDescription('Get product review from API Avis-Garantis')
+            ->addOption('locale', 'l', InputOption::VALUE_OPTIONAL, 'locale', 'fr_FR')
+        ;
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
@@ -36,6 +41,8 @@ class GetProductReviewCommand extends ContainerAwareCommand
         $rowsTreated = 0;
 
         try {
+            $locale = $input->getOption('locale');
+
             $products = ProductQuery::create()->findByVisible(1);
 
             $output->write("Product Review synchronization start \n");
@@ -55,7 +62,7 @@ class GetProductReviewCommand extends ContainerAwareCommand
                         if ($rowsTreated % 100 === 0) {
                             $output->write("Rows treated : " . $rowsTreated . "\n");
                         }
-                        if ($this->productReviewService->addGuaranteedOpinionProductRow($productRow, $product->getId())) {
+                        if ($this->productReviewService->addGuaranteedOpinionProductRow($productRow, $product->getId(), $locale)) {
                             $productReviewsAdded ++;
                         }
                         $rowsTreated++;
@@ -74,7 +81,10 @@ class GetProductReviewCommand extends ContainerAwareCommand
         return 1;
     }
 
-    private function removeDeletedReview($productReviews, $apiResultReviews)
+    /**
+     * @throws PropelException
+     */
+    private function removeDeletedReview($productReviews, $apiResultReviews): void
     {
         /** @var GuaranteedOpinionProductReview $productReview */
         foreach ($productReviews as $productReview) {

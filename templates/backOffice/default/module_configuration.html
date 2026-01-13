@@ -9,41 +9,58 @@
         {form name="guaranteedopinion_form_configuration_form"}
             <form action="{url path="/admin/module/GuaranteedOpinion/configuration"}" method="post">
                 {form_hidden_fields }
-                {render_form_field field="success_url" value={url path='/admin/module/GuaranteedOpinion'}}
-                {render_form_field field="error_url" value={url path='/admin/module/GuaranteedOpinion'}}
+                {render_form_field field="success_url" value={url path="/admin/module/GuaranteedOpinion?edit_language_id=$edit_language_id"}}
+                {render_form_field field="error_url" value={url path="/admin/module/GuaranteedOpinion?edit_language_id=$edit_language_id"}}
+
+                <input type="hidden" name="lang_id" value="{$edit_language_id}">
 
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-6">
                             <h2 class="title title-without-tabs">{intl l="Guaranteed Opinion Review access" d='guaranteedopinion.bo.default'}</h2>
-
-                            <div class="col-md-12 form-group">
-                                {render_form_field field="api_key_review"}
-                                <div>
-                                    <p>{intl l="Import Guaranteed Opinion Site Review : " d='guaranteedopinion.bo.default'}</p>
-                                    <p class="well well-sm">php Thelia module:GuaranteedOpinion:GetSiteReview</p>
-                                </div>
-                                <div>
-                                    <p>{intl l="Import Guaranteed Opinion Product Review : " d='guaranteedopinion.bo.default'}</p>
-                                    <p class="well well-sm">php Thelia module:GuaranteedOpinion:GetProductReview</p>
-                                </div>
-                                {render_form_field field="show_rating_url"}
-                            </div>
                         </div>
 
                         <div class="col-md-6">
                             <h2 class="title title-without-tabs">{intl l="Guaranteed Opinion Order access" d='guaranteedopinion.bo.default'}</h2>
+                        </div>
 
-                            <div class="col-md-12 form-group">
-                                {render_form_field field="api_key_order"}
-                                <div>
-                                    <p>{intl l="Send Guaranteed Opinion Order : " d='guaranteedopinion.bo.default'}</p>
-                                    <p class="well well-sm">php Thelia module:GuaranteedOpinion:SendOrder</p>
-                                </div>
+                        <div class="form-container col-md-12">
+                            {include
+                            file = "includes/inner-form-toolbar.html"
+                            hide_submit_buttons = true
+                            }
+                        </div>
 
-                                <div class="form-group">
-                                    {render_form_field form=$form field="status_to_export"}
-                                </div>
+                        <div class="col-md-6 form-group">
+                            {render_form_field field="api_key_review"}
+                            {render_form_field field="show_rating_url"}
+                        </div>
+
+                        <div class="col-md-6 form-group">
+                            {render_form_field field="api_key_order"}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div>
+                                <p>{intl l="Import Guaranteed Opinion Site Review : " d='guaranteedopinion.bo.default'}</p>
+                                <p class="well well-sm">php Thelia module:GuaranteedOpinion:GetSiteReview --locale {$edit_language_locale}</p>
+                            </div>
+                            <div>
+                                <p>{intl l="Import Guaranteed Opinion Product Review : " d='guaranteedopinion.bo.default'}</p>
+                                <p class="well well-sm">php Thelia module:GuaranteedOpinion:GetProductReview --locale {$edit_language_locale}</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <p>{intl l="Send Guaranteed Opinion Order : " d='guaranteedopinion.bo.default'}</p>
+                                <p class="well well-sm">php Thelia module:GuaranteedOpinion:SendOrder --locale {$edit_language_locale}</p>
+                            </div>
+
+                            <div class="form-group">
+                                {render_form_field form=$form field="status_to_export"}
                             </div>
                         </div>
                     </div>

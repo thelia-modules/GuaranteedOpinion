@@ -34,6 +34,15 @@ class GuaranteedOpinion extends BaseModule
     public const SITE_RATING_TOTAL_CONFIG_KEY = "guaranteedopinion.site_rating_total";
     public const SITE_RATING_AVERAGE_CONFIG_KEY = "guaranteedopinion.site_rating_average";
 
+    public const MAPPING_DEFAULT_URL = [
+        'fr_FR' => "https://www.societe-des-avis-garantis.fr/",
+        'en_US' => "https://www.guaranteed-reviews.com/",
+        'de_DE' => "https://www.g-g-b.de/",
+        'es_ES' => "https://www.sociedad-de-opiniones-contrastadas.es/",
+        'it_IT' => "https://www.societa-recensioni-garantite.it/",
+        'nl_NL' => "https://www.g-b-n.nl/"
+    ];
+
     /*
      * You may now override BaseModuleInterface methods, such as:
      * install, destroy, preActivation, postActivation, preDeactivation, postDeactivation
