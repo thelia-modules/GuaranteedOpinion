@@ -42,8 +42,8 @@ class FrontController extends BaseFrontController
     }
 
     $responseData = [
-      'total' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_TOTAL_CONFIG_KEY),
-      'average' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_AVERAGE_CONFIG_KEY),
+      'total' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_TOTAL_CONFIG_KEY, 0, $locale),
+      'average' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_AVERAGE_CONFIG_KEY, 0, $locale),
       'reviews' => $reviews
     ];
 

@@ -24,6 +24,7 @@ class GuaranteedOpinionPlugin extends AbstractSmartyPlugin
     public function getPluginDescriptors(): array
     {
         return [
+            new SmartyPluginDescriptor('function', 'getRatingUrl', $this, 'getRatingUrl'),
             new SmartyPluginDescriptor('function', 'getSiteRate', $this, 'getSiteRate'),
             new SmartyPluginDescriptor('function', 'getProductRate', $this, 'getProductRate'),
             new SmartyPluginDescriptor('function', 'site_reviews', $this, 'getSiteReviews'),
@@ -33,7 +34,14 @@ class GuaranteedOpinionPlugin extends AbstractSmartyPlugin
 
     public function getProductRate($param, $smarty): void
     {
-        $productRating = GuaranteedOpinionProductRatingQuery::create()->findOneByProductId($param['product_id']);
+        $productRatingQuery = GuaranteedOpinionProductRatingQuery::create()->filterByProductId($param['product_id']);
+
+        if (isset($param['locale'])) {
+            $locale = $param['locale'];
+            $productRatingQuery->filterByLocale($locale);
+        }
+
+        $productRating = $productRatingQuery->findOne();
 
         $smarty->assign('productTotal', $productRating?->getTotal());
         $smarty->assign('productAverage', $productRating?->getAverage());
@@ -41,8 +49,8 @@ class GuaranteedOpinionPlugin extends AbstractSmartyPlugin
 
     public function getSiteRate($param, $smarty): void
     {
-        $smarty->assign('siteTotal', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_TOTAL_CONFIG_KEY));
-        $smarty->assign('siteAverage', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_AVERAGE_CONFIG_KEY));
+        $smarty->assign('siteTotal', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_TOTAL_CONFIG_KEY, 0, $param['locale']));
+        $smarty->assign('siteAverage', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_AVERAGE_CONFIG_KEY, 0, $param['locale']));
     }
 
     public function getProductReviews($param, $smarty): void
@@ -82,8 +90,23 @@ class GuaranteedOpinionPlugin extends AbstractSmartyPlugin
         if (isset($param['limit'])) {
             $reviews->setLimit($param['limit']);
         }
+        if (isset($param['locale'])) {
+            $locale = $param['locale'];
+            $reviews->filterByLocale($locale);
+        }
         $reviews->find();
 
         $smarty->assign('site_reviews', $this->siteReviewService->formatSiteReviews($reviews));
+    }
+
+    public function getRatingUrl($param, $smarty): void
+    {
+        if (isset($param['locale'])) {
+            $locale = $param['locale'];
+        }
+
+        $reviewsUrl = GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SHOW_RATING_URL_CONFIG_KEY, $locale ?? 'fr_FR');
+
+        $smarty->assign('rating_url', $reviewsUrl);
     }
 }
