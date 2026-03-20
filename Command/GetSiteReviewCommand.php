@@ -38,8 +38,8 @@ class GetSiteReviewCommand extends ContainerAwareCommand
 
             $apiResponse = $this->client->getReviewsFromApi('site', $locale);
 
-            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SITE_RATING_TOTAL_CONFIG_KEY, $apiResponse['ratings']['total']);
-            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SITE_RATING_AVERAGE_CONFIG_KEY, $apiResponse['ratings']['average']);
+            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SITE_RATING_TOTAL_CONFIG_KEY, $apiResponse['ratings']['total'], $locale);
+            GuaranteedOpinion::setConfigValue(GuaranteedOpinion::SITE_RATING_AVERAGE_CONFIG_KEY, $apiResponse['ratings']['average'], $locale);
 
             $siteReviews = $apiResponse['reviews'];
 

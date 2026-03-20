@@ -56,7 +56,7 @@ class GetProductReviewCommand extends ContainerAwareCommand
                 $apiResponse = $this->client->getReviewsFromApi($addProductReviewEvent->getGuaranteedOpinionProductId());
 
                 if ($apiResponse['reviews'] !== []) {
-                    $this->productReviewService->addGuaranteedOpinionProductRating($product->getId(), $apiResponse['ratings']);
+                    $this->productReviewService->addGuaranteedOpinionProductRating($product->getId(), $apiResponse['ratings'], $locale);
 
                     foreach ($apiResponse['reviews'] as $productRow) {
                         if ($rowsTreated % 100 === 0) {

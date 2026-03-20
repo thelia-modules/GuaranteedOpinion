@@ -72,6 +72,7 @@ DROP TABLE IF EXISTS `guaranteed_opinion_product_rating`;
 CREATE TABLE `guaranteed_opinion_product_rating`
 (
     `product_id` INTEGER NOT NULL,
+    `locale` VARCHAR(5),
     `total` INTEGER,
     `average` VARCHAR(255),
     PRIMARY KEY (`product_id`)

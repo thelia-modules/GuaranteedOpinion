@@ -101,7 +101,7 @@ class ProductReviewService
     /**
      * @throws PropelException
      */
-    public function addGuaranteedOpinionProductRating(int $productId, array $ratings): void
+    public function addGuaranteedOpinionProductRating(int $productId, array $ratings, string $locale): void
     {
         if (null === $productRating = GuaranteedOpinionProductRatingQuery::create()->findOneByProductId($productId)) {
             $productRating = new GuaranteedOpinionProductRating();
@@ -109,6 +109,7 @@ class ProductReviewService
 
         $productRating
             ->setProductId($productId)
+            ->setLocale($locale)
             ->setTotal($ratings['total'])
             ->setAverage($ratings['average'])
             ->save();

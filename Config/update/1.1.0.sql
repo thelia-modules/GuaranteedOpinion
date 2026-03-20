@@ -1,7 +1,7 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ---------------------------------------------------------------------
--- guaranteed_opinion_product_rating
+-- guaranteed_opinion_product_review
 -- ---------------------------------------------------------------------
 
 ALTER TABLE `guaranteed_opinion_product_review` ADD `locale` VARCHAR(5) AFTER `product_review_id`;
