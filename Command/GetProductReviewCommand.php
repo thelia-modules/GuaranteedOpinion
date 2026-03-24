@@ -53,7 +53,7 @@ class GetProductReviewCommand extends ContainerAwareCommand
 
                 $productReviews = GuaranteedOpinionProductReviewQuery::create()->filterByProductId($product->getId())->find();
 
-                $apiResponse = $this->client->getReviewsFromApi($addProductReviewEvent->getGuaranteedOpinionProductId());
+                $apiResponse = $this->client->getReviewsFromApi($addProductReviewEvent->getGuaranteedOpinionProductId(), $locale);
 
                 if ($apiResponse['reviews'] !== []) {
                     $this->productReviewService->addGuaranteedOpinionProductRating($product->getId(), $apiResponse['ratings'], $locale);
