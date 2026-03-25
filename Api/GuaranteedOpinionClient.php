@@ -39,7 +39,7 @@ class GuaranteedOpinionClient
      */
     public function getReviewsFromApi(string $scope = 'site', string $locale = 'fr_FR'): array
     {
-        $url = self::URL_API . "/" . self::URL_API_REVIEW . "/" . GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY, null, $locale) . "/" . $scope;
+        $url = self::URL_API . self::URL_API_REVIEW . "/" . GuaranteedOpinion::getConfigValue(GuaranteedOpinion::API_REVIEW_CONFIG_KEY, null, $locale) . "/" . $scope;
 
         $ch = curl_init($url);
 
