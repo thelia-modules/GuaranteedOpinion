@@ -55,12 +55,12 @@ class GetSiteReviewCommand extends ContainerAwareCommand
             }
         } catch (Exception $exception) {
             $output->write($exception->getMessage());
-            return 0;
+            return self::FAILURE;
         }
 
         $output->write("End of Site Review synchronization\n");
         $output->write("Site Review Added : " .$siteReviewsAdded. "\n");
 
-        return 1;
+        return self::SUCCESS;
     }
 }

@@ -28,7 +28,6 @@ class GuaranteedSiteLoop extends BaseLoop implements PropelSearchLoopInterface
             $loopResultRow = new LoopResultRow($review);
 
             $loopResultRow
-                ->set('ID', $review->getId())
                 ->set('PRODUCT_REVIEW_ID', $review->getSiteReviewId())
                 ->set('NAME', $review->getName())
                 ->set('RATE', $review->getRate())

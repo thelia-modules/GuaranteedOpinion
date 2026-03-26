@@ -22,6 +22,7 @@ class ProductReviewService
     {
         try {
             $review = GuaranteedOpinionProductReviewQuery::create()
+                ->filterByLocale($locale)
                 ->findOneByProductReviewId($row['id']);
 
             if (null === $review) {
