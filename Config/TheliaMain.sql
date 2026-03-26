@@ -72,10 +72,10 @@ DROP TABLE IF EXISTS `guaranteed_opinion_product_rating`;
 CREATE TABLE `guaranteed_opinion_product_rating`
 (
     `product_id` INTEGER NOT NULL,
-    `locale` VARCHAR(5),
+    `locale` VARCHAR(5) NOT NULL,
     `total` INTEGER,
     `average` VARCHAR(255),
-    PRIMARY KEY (`product_id`)
+    PRIMARY KEY (`product_id`,`locale`)
 ) ENGINE=InnoDB;
 
 # This restores the fkey checks, after having unset them earlier

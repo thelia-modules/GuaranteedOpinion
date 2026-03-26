@@ -13,8 +13,7 @@ class ProductReviewService
 {
     public function addGuaranteedOpinionProductReviews(array $productReviews, int $productId, string $locale): void
     {
-        foreach ($productReviews as $productRow)
-        {
+        foreach ($productReviews as $productRow) {
             $this->addGuaranteedOpinionProductRow($productRow, $productId, $locale);
         }
     }
@@ -35,16 +34,14 @@ class ProductReviewService
                     ->setReviewDate($row['date'])
                     ->setRate($row['r'])
                     ->setOrderDate($row['odate'])
-                    ->setProductId($productId)
-                ;
+                    ->setProductId($productId);
                 $review->save();
             }
 
             if ($row['reply'] !== "" && $row['rdate'] !== "") {
                 $review
                     ->setReply($row['reply'])
-                    ->setReplyDate($row['rdate'])
-                ;
+                    ->setReplyDate($row['rdate']);
                 $review->save();
             }
 
@@ -103,7 +100,7 @@ class ProductReviewService
      */
     public function addGuaranteedOpinionProductRating(int $productId, array $ratings, string $locale): void
     {
-        if (null === $productRating = GuaranteedOpinionProductRatingQuery::create()->findOneByProductId($productId)) {
+        if (null === $productRating = GuaranteedOpinionProductRatingQuery::create()->filterByLocale($locale)->findOneByProductId($productId)) {
             $productRating = new GuaranteedOpinionProductRating();
         }
 
