@@ -78,7 +78,7 @@ class GetProductReviewCommand extends ContainerAwareCommand
         $output->write("End of Product Review synchronization\n");
         $output->write("Product Reviews Added : " .$productReviewsAdded. "\n");
 
-        return 1;
+        return self::SUCCESS;
     }
 
     /**

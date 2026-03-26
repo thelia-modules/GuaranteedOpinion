@@ -26,7 +26,6 @@ class GuaranteedProductLoop extends BaseLoop implements PropelSearchLoopInterfac
             $loopResultRow = new LoopResultRow($review);
 
             $loopResultRow
-                ->set('ID', $review->getId())
                 ->set('PRODUCT_REVIEW_ID', $review->getProductReviewId())
                 ->set('NAME', $review->getName())
                 ->set('RATE', $review->getRate())

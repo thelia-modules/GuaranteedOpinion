@@ -21,6 +21,7 @@ class SiteReviewService
     {
         try {
             $review = GuaranteedOpinionSiteReviewQuery::create()
+                ->filterByLocale($locale)
                 ->findOneBySiteReviewId($row["id"]);
 
             if (null === $review) {

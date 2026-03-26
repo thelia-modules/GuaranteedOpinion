@@ -61,6 +61,6 @@ class SendOrderCommand extends ContainerAwareCommand
             $output->write($exception->getMessage());
         }
 
-        return 1;
+        return self::SUCCESS;
     }
 }

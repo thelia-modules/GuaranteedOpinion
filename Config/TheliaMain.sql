@@ -11,9 +11,8 @@ DROP TABLE IF EXISTS `guaranteed_opinion_product_review`;
 
 CREATE TABLE `guaranteed_opinion_product_review`
 (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `product_review_id` VARCHAR(55) NOT NULL,
-    `locale` VARCHAR(5),
+    `locale` VARCHAR(5) NOT NULL,
     `name` VARCHAR(255),
     `rate` DECIMAL(2,1) DEFAULT 0,
     `review` VARBINARY(10000),
@@ -22,8 +21,7 @@ CREATE TABLE `guaranteed_opinion_product_review`
     `order_date` DATETIME,
     `reply` VARBINARY(10000),
     `reply_date` DATETIME,
-    PRIMARY KEY (`id`),
-    UNIQUE INDEX `guaranteed_opinion_product_review_id_unique` (`product_review_id`)
+    PRIMARY KEY (`product_review_id`,`locale`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -49,9 +47,8 @@ DROP TABLE IF EXISTS `guaranteed_opinion_site_review`;
 
 CREATE TABLE `guaranteed_opinion_site_review`
 (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `site_review_id` INTEGER NOT NULL,
-    `locale` VARCHAR(5),
+    `locale` VARCHAR(5) NOT NULL,
     `name` VARCHAR(255),
     `rate` DECIMAL(2,1) DEFAULT 0,
     `review` VARBINARY(10000),
@@ -59,8 +56,7 @@ CREATE TABLE `guaranteed_opinion_site_review`
     `order_date` DATETIME,
     `reply` VARBINARY(10000),
     `reply_date` DATETIME,
-    PRIMARY KEY (`id`,`site_review_id`),
-    UNIQUE INDEX `guaranteed_opinion_site_review_id_unique` (`site_review_id`)
+    PRIMARY KEY (`site_review_id`,`locale`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
