@@ -7,7 +7,7 @@ use GuaranteedOpinion\Model\GuaranteedOpinionProductRatingQuery;
 use GuaranteedOpinion\Model\GuaranteedOpinionProductReviewQuery;
 use GuaranteedOpinion\Model\GuaranteedOpinionSiteReviewQuery;
 use Propel\Runtime\Exception\PropelException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Controller\Front\BaseFrontController;
 use Thelia\Core\HttpFoundation\JsonResponse;
 use Thelia\Core\HttpFoundation\Request;
