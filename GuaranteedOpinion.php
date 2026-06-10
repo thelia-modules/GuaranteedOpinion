@@ -5,7 +5,7 @@ namespace GuaranteedOpinion;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Symfony\Component\Finder\Finder;
-use Thelia\Install\Database;
+use Thelia\Core\Install\Database;
 use Thelia\Log\Tlog;
 use Thelia\Module\BaseModule;
 
@@ -49,7 +49,7 @@ class GuaranteedOpinion extends BaseModule
     public static function configureServices(ServicesConfigurator $servicesConfigurator): void
     {
         $servicesConfigurator->load(self::getModuleCode().'\\', __DIR__)
-            ->exclude([THELIA_MODULE_DIR . ucfirst(self::getModuleCode()). "/I18n/*"])
+            ->exclude([__DIR__ . '/I18n/*'])
             ->autowire(true)
             ->autoconfigure(true);
     }

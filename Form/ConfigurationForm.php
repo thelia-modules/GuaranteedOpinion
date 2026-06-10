@@ -30,6 +30,11 @@ use Thelia\Model\OrderStatusQuery;
  */
 class ConfigurationForm extends BaseForm
 {
+    public static function getName(): string
+    {
+        return 'guaranteedopinion_form_configuration_form';
+    }
+
     protected function buildForm(): void
     {
         $translator = Translator::getInstance();

@@ -1,0 +1,122 @@
+{# GuaranteedOpinion — back-office configuration fragment (hook: module.configuration) #}
+<div class="card mb-4">
+    <div class="card-header">
+        <h4 class="card-title mb-0">
+            {{ 'GuaranteedOpinion configuration'|trans({}, 'guaranteedopinion.bo.default') }}
+        </h4>
+    </div>
+
+    {{ form_start(form, {action: path('module_GuaranteedOpinion_configuration'), method: 'POST', attr: {class: 'form-horizontal'}}) }}
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>{{ 'Guaranteed Opinion Review access'|trans({}, 'guaranteedopinion.bo.default') }}</h5>
+
+                <div class="mb-3">
+                    {{ form_label(form.api_key_review) }}
+                    {{ form_widget(form.api_key_review, {attr: {class: 'form-control' ~ (form.api_key_review.vars.errors|length ? ' is-invalid' : '')}}) }}
+                    {{ form_errors(form.api_key_review) }}
+                </div>
+
+                <div class="mb-3">
+                    <p>{{ 'Import Guaranteed Opinion Site Review : '|trans({}, 'guaranteedopinion.bo.default') }}</p>
+                    <p class="card p-2 bg-light text-monospace">php Thelia module:GuaranteedOpinion:GetSiteReview</p>
+                </div>
+
+                <div class="mb-3">
+                    <p>{{ 'Import Guaranteed Opinion Product Review : '|trans({}, 'guaranteedopinion.bo.default') }}</p>
+                    <p class="card p-2 bg-light text-monospace">php Thelia module:GuaranteedOpinion:GetProductReview</p>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.show_rating_url) }}
+                    {{ form_widget(form.show_rating_url, {attr: {class: 'form-control' ~ (form.show_rating_url.vars.errors|length ? ' is-invalid' : '')}}) }}
+                    {{ form_errors(form.show_rating_url) }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h5>{{ 'Guaranteed Opinion Order access'|trans({}, 'guaranteedopinion.bo.default') }}</h5>
+
+                <div class="mb-3">
+                    {{ form_label(form.api_key_order) }}
+                    {{ form_widget(form.api_key_order, {attr: {class: 'form-control' ~ (form.api_key_order.vars.errors|length ? ' is-invalid' : '')}}) }}
+                    {{ form_errors(form.api_key_order) }}
+                </div>
+
+                <div class="mb-3">
+                    <p>{{ 'Send Guaranteed Opinion Order : '|trans({}, 'guaranteedopinion.bo.default') }}</p>
+                    <p class="card p-2 bg-light text-monospace">php Thelia module:GuaranteedOpinion:SendOrder</p>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.status_to_export) }}
+                    {{ form_widget(form.status_to_export, {attr: {class: 'form-select' ~ (form.status_to_export.vars.errors|length ? ' is-invalid' : '')}}) }}
+                    {{ form_errors(form.status_to_export) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <h5>{{ 'Product reviews'|trans({}, 'guaranteedopinion.bo.default') }}</h5>
+
+                <div class="mb-3">
+                    {{ form_label(form.product_review_hook_display) }}
+                    {{ form_widget(form.product_review_hook_display, {attr: {class: 'form-control' ~ (form.product_review_hook_display.vars.errors|length ? ' is-invalid' : '')}}) }}
+                    {{ form_errors(form.product_review_hook_display) }}
+                </div>
+
+                <div class="mb-3 form-check">
+                    {{ form_widget(form.product_review_display, {attr: {class: 'form-check-input'}}) }}
+                    {{ form_label(form.product_review_display, null, {label_attr: {class: 'form-check-label'}}) }}
+                    {{ form_errors(form.product_review_display) }}
+                </div>
+
+                <div class="mb-3 form-check">
+                    {{ form_widget(form.product_review_tab_display, {attr: {class: 'form-check-input'}}) }}
+                    {{ form_label(form.product_review_tab_display, null, {label_attr: {class: 'form-check-label'}}) }}
+                    {{ form_errors(form.product_review_tab_display) }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h5>{{ 'Site reviews'|trans({}, 'guaranteedopinion.bo.default') }}</h5>
+
+                <div class="mb-3">
+                    {{ form_label(form.site_review_hook_display) }}
+                    {{ form_widget(form.site_review_hook_display, {attr: {class: 'form-control' ~ (form.site_review_hook_display.vars.errors|length ? ' is-invalid' : '')}}) }}
+                    {{ form_errors(form.site_review_hook_display) }}
+                </div>
+
+                <div class="mb-3 form-check">
+                    {{ form_widget(form.site_review_display, {attr: {class: 'form-check-input'}}) }}
+                    {{ form_label(form.site_review_display, null, {label_attr: {class: 'form-check-label'}}) }}
+                    {{ form_errors(form.site_review_display) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.site_review_widget) }}
+                    {{ form_widget(form.site_review_widget, {attr: {class: 'form-control font-monospace' ~ (form.site_review_widget.vars.errors|length ? ' is-invalid' : ''), rows: 4}}) }}
+                    {{ form_errors(form.site_review_widget) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.site_review_widget_iframe) }}
+                    {{ form_widget(form.site_review_widget_iframe, {attr: {class: 'form-control font-monospace' ~ (form.site_review_widget_iframe.vars.errors|length ? ' is-invalid' : ''), rows: 4}}) }}
+                    {{ form_errors(form.site_review_widget_iframe) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-save"></i>
+                {{ 'Save'|trans }}
+            </button>
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+</div>
