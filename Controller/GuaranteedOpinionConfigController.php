@@ -9,13 +9,12 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Controller\Admin\BaseAdminController;
-use Thelia\Core\Template\ParserContext;
 use Thelia\Form\Exception\FormValidationException;
 
 class GuaranteedOpinionConfigController extends BaseAdminController
 {
     #[Route('/admin/module/GuaranteedOpinion/configuration', name: 'module_GuaranteedOpinion_configuration', methods: ['POST'])]
-    public function saveConfiguration(ParserContext $parserContext): RedirectResponse|Response
+    public function saveConfiguration(): RedirectResponse|Response
     {
         $form = $this->createForm(ConfigurationForm::getName());
         try {
@@ -43,11 +42,8 @@ class GuaranteedOpinionConfigController extends BaseAdminController
         } catch (Exception $e) {
             $error_message = $e->getMessage();
         }
-        $form->setErrorMessage($error_message);
 
-        $parserContext
-            ->addForm($form)
-            ->setGeneralError($error_message);
+        $this->addFlash('danger', $error_message);
 
         return $this->generateRedirectFromRoute('admin.module.configure', [], ['module_code' => 'GuaranteedOpinion']);
     }
