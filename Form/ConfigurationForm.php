@@ -83,7 +83,7 @@ class ConfigurationForm extends BaseForm
                 'status_to_export',
                 ChoiceType::class,
                 [
-                    "data" => explode(',', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT_CONFIG_KEY)),
+                    "data" => explode(',', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT_CONFIG_KEY) ?? ''),
                     "label"=>$translator?->trans("Order status to export", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false,
                     'multiple' => true,
@@ -129,7 +129,7 @@ class ConfigurationForm extends BaseForm
                 "site_review_widget",
                 TextareaType::class,
                 [
-                    "data" => htmlspecialchars_decode(GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_WIDGET_CONFIG_KEY)),
+                    "data" => htmlspecialchars_decode(GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_WIDGET_CONFIG_KEY) ?? ''),
                     "label"=>$translator?->trans("Site review widget code", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false,
                 ]
@@ -138,7 +138,7 @@ class ConfigurationForm extends BaseForm
                 "site_review_widget_iframe",
                 TextareaType::class,
                 [
-                    "data" => htmlspecialchars_decode(GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_WIDGET_IFRAME_CONFIG_KEY)),
+                    "data" => htmlspecialchars_decode(GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_REVIEW_WIDGET_IFRAME_CONFIG_KEY) ?? ''),
                     "label"=>$translator?->trans("Site review widget iframe code", array(), GuaranteedOpinion::DOMAIN_NAME),
                     "required" => false,
                 ]
