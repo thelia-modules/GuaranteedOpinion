@@ -1,74 +1,104 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the Thelia package.
+ * http://www.thelia.net
+ *
+ * (c) OpenStudio <info@thelia.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace GuaranteedOpinion\EventListeners;
 
-use DateTime;
 use GuaranteedOpinion\GuaranteedOpinion;
 use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueue;
 use GuaranteedOpinion\Model\GuaranteedOpinionOrderQueueQuery;
 use GuaranteedOpinion\Service\OrderService;
 use Propel\Runtime\Exception\PropelException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
 
+/**
+ * Keeps the send queue in step with the order statuses chosen in the configuration: an order enters it once, when
+ * it reaches one of them, and leaves it while not sent yet if it moves to another one. The listener returns in
+ * every case: the status change goes on.
+ */
 class OrderListener implements EventSubscriberInterface
 {
-    public function __construct(
-        protected RequestStack $requestStack,
-        protected OrderService $orderService
-    ) {}
-
     /**
      * @throws PropelException
      */
     public function registerOrder(OrderEvent $event): void
     {
-        $statusToExport = explode(',', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT_CONFIG_KEY, '4'));
+        $order = $event->getPlacedOrder();
 
-        if (in_array($event->getPlacedOrder()->getStatusId(), $statusToExport, false)) {
-            $guaranteedReviewsOrderQueue = new GuaranteedOpinionOrderQueue();
-            $guaranteedReviewsOrderQueue->setOrderId($event->getPlacedOrder()->getId())
-                ->setStatus(0)
-                ->setTreatedAt(new DateTime(''))
-                ->save()
-            ;
+        if (null !== $order && $this->isExported((int) $order->getStatusId())) {
+            $this->enqueue((int) $order->getId());
         }
     }
 
     /**
-     * @param OrderEvent $event
      * @throws PropelException
      */
     public function checkOrderInQueue(OrderEvent $event): void
     {
-        $statusToExport = explode(',', GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT_CONFIG_KEY, '4'));
+        $order = $event->getOrder();
 
-        $newStatus = $event->getOrder()->getStatusId();
-        $orderId = $event->getOrder()->getId();
-
-        $guaranteedReviewsOrderQueue = GuaranteedOpinionOrderQueueQuery::create()
-            ->filterByOrderId($orderId)
-            ->findOne();
-
-        if (null !== $guaranteedReviewsOrderQueue) {
-            if (!in_array($newStatus, $statusToExport, false) && (int)$guaranteedReviewsOrderQueue->getStatus() === 0){
-                $guaranteedReviewsOrderQueue->delete();
-            }
-        } else if (in_array($newStatus, $statusToExport, false)){
-            $guaranteedReviewsOrderQueue = new GuaranteedOpinionOrderQueue();
-            $guaranteedReviewsOrderQueue->setOrderId($orderId)
-                ->setStatus(0)
-                ->save();
+        if (null === $order) {
+            return;
         }
+
+        $orderId = (int) $order->getId();
+
+        if ($this->isExported((int) $order->getStatusId())) {
+            $this->enqueue($orderId);
+
+            return;
+        }
+
+        GuaranteedOpinionOrderQueueQuery::create()
+            ->filterByOrderId($orderId)
+            ->filterByStatus(OrderService::STATUS_PENDING)
+            ->delete();
     }
 
     public static function getSubscribedEvents(): array
     {
-        return array(
-            TheliaEvents::ORDER_UPDATE_STATUS => ["checkOrderInQueue", 64],
+        return [
+            TheliaEvents::ORDER_UPDATE_STATUS => ['checkOrderInQueue', 64],
             TheliaEvents::ORDER_PAY => ['registerOrder', 64],
+        ];
+    }
+
+    private function isExported(int $statusId): bool
+    {
+        $statusesToExport = array_map(
+            'intval',
+            explode(',', (string) GuaranteedOpinion::getConfigValue(GuaranteedOpinion::STATUS_TO_EXPORT_CONFIG_KEY, '4')),
         );
+
+        return \in_array($statusId, $statusesToExport, true);
+    }
+
+    /**
+     * An order already in the queue, sent or not, is not added again.
+     *
+     * @throws PropelException
+     */
+    private function enqueue(int $orderId): void
+    {
+        if (GuaranteedOpinionOrderQueueQuery::create()->filterByOrderId($orderId)->exists()) {
+            return;
+        }
+
+        (new GuaranteedOpinionOrderQueue())
+            ->setOrderId($orderId)
+            ->setStatus(OrderService::STATUS_PENDING)
+            ->save();
     }
 }

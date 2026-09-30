@@ -7,32 +7,27 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- guaranteed_opinion_product_review
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `guaranteed_opinion_product_review`;
-
-CREATE TABLE `guaranteed_opinion_product_review`
+CREATE TABLE IF NOT EXISTS `guaranteed_opinion_product_review`
 (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `product_review_id` VARCHAR(55) NOT NULL,
+    `locale` VARCHAR(5) NOT NULL,
     `name` VARCHAR(255),
     `rate` DECIMAL(2,1) DEFAULT 0,
     `review` VARBINARY(10000),
     `review_date` DATETIME,
     `product_id` INTEGER,
-    `order_id` VARCHAR(255),
     `order_date` DATETIME,
-    `reply` VARCHAR(255),
+    `reply` VARBINARY(10000),
     `reply_date` DATETIME,
-    PRIMARY KEY (`id`),
-    UNIQUE INDEX `guaranteed_opinion_product_review_id_unique` (`product_review_id`)
+    PRIMARY KEY (`product_review_id`,`locale`),
+    INDEX `idx_guaranteed_opinion_product_review_product_locale` (`product_id`, `locale`, `review_date`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
 -- guaranteed_opinion_order_queue
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `guaranteed_opinion_order_queue`;
-
-CREATE TABLE `guaranteed_opinion_order_queue`
+CREATE TABLE IF NOT EXISTS `guaranteed_opinion_order_queue`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `order_id` INTEGER NOT NULL,
@@ -45,36 +40,32 @@ CREATE TABLE `guaranteed_opinion_order_queue`
 -- guaranteed_opinion_site_review
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `guaranteed_opinion_site_review`;
-
-CREATE TABLE `guaranteed_opinion_site_review`
+CREATE TABLE IF NOT EXISTS `guaranteed_opinion_site_review`
 (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `site_review_id` INTEGER NOT NULL,
+    `locale` VARCHAR(5) NOT NULL,
     `name` VARCHAR(255),
     `rate` DECIMAL(2,1) DEFAULT 0,
     `review` VARBINARY(10000),
     `review_date` DATETIME,
-    `order_id` VARCHAR(255),
     `order_date` DATETIME,
-    `reply` VARCHAR(255),
+    `reply` VARBINARY(10000),
     `reply_date` DATETIME,
-    PRIMARY KEY (`id`,`site_review_id`),
-    UNIQUE INDEX `guaranteed_opinion_site_review_id_unique` (`site_review_id`)
+    PRIMARY KEY (`site_review_id`,`locale`),
+    INDEX `idx_guaranteed_opinion_site_review_locale_date` (`locale`, `review_date`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
 -- guaranteed_opinion_product_rating
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `guaranteed_opinion_product_rating`;
-
-CREATE TABLE `guaranteed_opinion_product_rating`
+CREATE TABLE IF NOT EXISTS `guaranteed_opinion_product_rating`
 (
     `product_id` INTEGER NOT NULL,
+    `locale` VARCHAR(5) NOT NULL,
     `total` INTEGER,
     `average` VARCHAR(255),
-    PRIMARY KEY (`product_id`)
+    PRIMARY KEY (`product_id`,`locale`)
 ) ENGINE=InnoDB;
 
 # This restores the fkey checks, after having unset them earlier

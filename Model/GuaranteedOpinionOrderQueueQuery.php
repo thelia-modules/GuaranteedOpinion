@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GuaranteedOpinion\Model;
 
 use GuaranteedOpinion\Model\Base\GuaranteedOpinionOrderQueueQuery as BaseGuaranteedOpinionOrderQueueQuery;
@@ -11,8 +13,6 @@ use Thelia\Model\RewritingUrlQuery;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'guaranteed_opinion_order_queue' table.
- *
- *
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as

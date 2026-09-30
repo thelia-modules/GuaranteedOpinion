@@ -1,100 +1,86 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the Thelia package.
+ * http://www.thelia.net
+ *
+ * (c) OpenStudio <info@thelia.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace GuaranteedOpinion\Controller;
 
-use GuaranteedOpinion\GuaranteedOpinion;
-use GuaranteedOpinion\Model\GuaranteedOpinionProductRatingQuery;
-use GuaranteedOpinion\Model\GuaranteedOpinionProductReviewQuery;
-use GuaranteedOpinion\Model\GuaranteedOpinionSiteReviewQuery;
-use Propel\Runtime\Exception\PropelException;
+use GuaranteedOpinion\Model\GuaranteedOpinionProductReview;
+use GuaranteedOpinion\Model\GuaranteedOpinionSiteReview;
+use GuaranteedOpinion\Service\ReviewReader;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Controller\Front\BaseFrontController;
-use Thelia\Core\HttpFoundation\JsonResponse;
 use Thelia\Core\HttpFoundation\Request;
-use Thelia\Core\HttpFoundation\Response;
+use Thelia\Model\Lang;
 
-#[Route(path: "/guaranteed_opinion", name: "guaranteed_opinion")]
+/**
+ * JSON pages of reviews in the language of the visitor ("next reviews" buttons). The theme reads the API resources
+ * of the module ({@see \GuaranteedOpinion\Api\Resource\GuaranteedOpinionProductReview}) for everything else.
+ */
+#[Route(path: '/guaranteed_opinion', name: 'guaranteed_opinion')]
 class FrontController extends BaseFrontController
 {
-  /**
-   * @throws PropelException
-   */
-  #[Route(path: "/site_reviews/offset/{offset}/limit/{limit}", name: "site_reviews", methods: "GET")]
-  public function siteReviews(int $offset, int $limit, Request $request): JsonResponse|Response
-  {
-    $reviews = [];
+    private const MAXIMUM_LIMIT = 50;
 
-    $siteReviews = GuaranteedOpinionSiteReviewQuery::create()
-      ->setLimit($limit)
-      ->setOffset($offset)
-      ->find();
+    #[Route(path: '/site_reviews/offset/{offset}/limit/{limit}', name: 'site_reviews', requirements: ['offset' => '\d+', 'limit' => '\d+'], methods: 'GET')]
+    public function siteReviews(int $offset, int $limit, Request $request, ReviewReader $reviewReader): JsonResponse
+    {
+        $locale = $this->visitorLocale($request);
+        $rating = $reviewReader->siteRating($locale);
 
-    foreach ($siteReviews as $review) {
-      $reviews[] = [
-        'rate' => $review->getRate(),
-        'name' => $review->getName(),
-        'date' => $review->getReviewDate()?->format('Y-m-d'),
-        'message' => $review->getReview()
-      ];
+        return new JsonResponse([
+            'total' => $rating['total'],
+            'average' => $rating['average'],
+            'reviews' => array_map(
+                self::reviewToArray(...),
+                $reviewReader->siteReviews($locale, $offset, min($limit, self::MAXIMUM_LIMIT)),
+            ),
+        ]);
     }
 
-    $responseData = [
-      'total' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_TOTAL_CONFIG_KEY),
-      'average' => GuaranteedOpinion::getConfigValue(GuaranteedOpinion::SITE_RATING_AVERAGE_CONFIG_KEY),
-      'reviews' => $reviews
-    ];
+    #[Route(path: '/product_reviews/{id}/offset/{offset}/limit/{limit}', name: 'product_reviews', requirements: ['id' => '\d+', 'offset' => '\d+', 'limit' => '\d+'], methods: 'GET')]
+    public function productReviews(int $id, int $offset, int $limit, Request $request, ReviewReader $reviewReader): JsonResponse
+    {
+        $locale = $this->visitorLocale($request);
+        $rating = $reviewReader->productRatings([$id], $locale)[$id] ?? null;
 
-    if ($request->headers->get('Accept') === 'text/html') {
-      $response = $this->render('includes/next-site-reviews', $responseData, count($reviews) > 0 ? Response::HTTP_OK : Response::HTTP_NO_CONTENT);
-
-      $response->headers->set('X-Remaining-Reviews', $responseData["total"] - $offset - $limit);
-
-      return $response;
+        return new JsonResponse([
+            'total' => $rating?->getTotal(),
+            'average' => $rating?->getAverage(),
+            'reviews' => array_map(
+                self::reviewToArray(...),
+                $reviewReader->productReviews($id, $locale, $offset, min($limit, self::MAXIMUM_LIMIT)),
+            ),
+        ]);
     }
 
-    return new JsonResponse($responseData);
-  }
-
-  /**
-   * @throws PropelException
-   */
-  #[Route(path: "/product_reviews/{id}/offset/{offset}/limit/{limit}", name: "product_reviews", methods: "GET")]
-  public function productReviews(int $id, int $offset, int $limit, Request $request): JsonResponse|Response
-  {
-    $reviews = [];
-
-    $productRating = GuaranteedOpinionProductRatingQuery::create()
-      ->findOneByProductId($id);
-
-    $productReviews = GuaranteedOpinionProductReviewQuery::create()
-      ->filterByProductId($id)
-      ->setLimit($limit)
-      ->setOffset($offset)
-      ->find();
-
-    foreach ($productReviews as $review) {
-      $reviews[] = [
-        'rate' => $review->getRate(),
-        'name' => $review->getName(),
-        'date' => $review->getReviewDate()?->format('Y-m-d'),
-        'message' => $review->getReview()
-      ];
+    /**
+     * @return array{rate: float, name: string|null, date: string|null, message: string|null}
+     */
+    private static function reviewToArray(GuaranteedOpinionProductReview|GuaranteedOpinionSiteReview $review): array
+    {
+        return [
+            'rate' => (float) $review->getRate(),
+            'name' => $review->getName(),
+            'date' => $review->getReviewDate()?->format('Y-m-d'),
+            'message' => $review->getReview(),
+        ];
     }
 
-    $responseData = [
-      'total' => $productRating?->getTotal(),
-      'average' => $productRating?->getAverage(),
-      'reviews' => $reviews
-    ];
+    private function visitorLocale(Request $request): string
+    {
+        $lang = $request->hasSession() ? $request->getSession()->getLang() : null;
 
-    if ($request->headers->get('Accept') === 'text/html') {
-      $response = $this->render('includes/next-product-reviews', $responseData, count($reviews) > 0 ? Response::HTTP_OK : Response::HTTP_NO_CONTENT);
-
-      $response->headers->set('X-Remaining-Reviews', $responseData["total"] - $offset - $limit);
-
-      return $response;
+        return ($lang ?? Lang::getDefaultLanguage())->getLocale();
     }
-
-    return new JsonResponse($responseData);
-  }
 }
