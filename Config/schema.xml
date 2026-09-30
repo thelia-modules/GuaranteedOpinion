@@ -4,21 +4,22 @@
           xsi:noNamespaceSchemaLocation="../../../vendor/thelia/propel/resources/xsd/database.xsd" >
 
     <table name="guaranteed_opinion_product_review" namespace="GuaranteedOpinion\Model">
-        <column autoIncrement="true" name="id" primaryKey="true" type="INTEGER" required="true" />
-        <column name="product_review_id" type="VARCHAR" size="55" required="true" />
+        <column name="product_review_id" primaryKey="true" type="VARCHAR" size="55" required="true" />
+        <column name="locale" primaryKey="true" type="VARCHAR" size="5" required="true" />
         <column name="name" type="VARCHAR" size="255" />
         <column defaultValue="0" name="rate" scale="1" size="2" type="DECIMAL"/>
         <column name="review" size="10000" sqlType="VARBINARY(10000)" type="VARCHAR"/>
         <column name="review_date" type="TIMESTAMP" />
         <column name="product_id" type="INTEGER"/>
-        <column name="order_id" type="VARCHAR" size="255"/>
         <column name="order_date" type="TIMESTAMP"/>
         <column name="reply" size="10000" sqlType="VARBINARY(10000)" type="VARCHAR"/>
         <column name="reply_date" type="TIMESTAMP"/>
 
-        <unique name="guaranteed_opinion_product_review_id_unique">
-            <unique-column name="product_review_id"/>
-        </unique>
+        <index name="idx_guaranteed_opinion_product_review_product_locale">
+            <index-column name="product_id"/>
+            <index-column name="locale"/>
+            <index-column name="review_date"/>
+        </index>
     </table>
 
     <table name="guaranteed_opinion_order_queue" namespace="GuaranteedOpinion\Model">
@@ -29,27 +30,28 @@
     </table>
 
     <table name="guaranteed_opinion_site_review" namespace="GuaranteedOpinion\Model">
-        <column autoIncrement="true" name="id" primaryKey="true" type="INTEGER" required="true" />
         <column name="site_review_id" primaryKey="true" type="INTEGER" required="true" />
+        <column name="locale" primaryKey="true" type="VARCHAR" size="5" required="true" />
         <column name="name" type="VARCHAR" size="255" />
         <column defaultValue="0" name="rate" scale="1" size="2" type="DECIMAL"/>
         <column name="review" size="10000" sqlType="VARBINARY(10000)" type="VARCHAR"/>
         <column name="review_date" type="TIMESTAMP"/>
-        <column name="order_id" type="VARCHAR" size="255"/>
         <column name="order_date" type="TIMESTAMP"/>
         <column name="reply" size="10000" sqlType="VARBINARY(10000)" type="VARCHAR"/>
         <column name="reply_date" type="TIMESTAMP"/>
 
-        <unique name="guaranteed_opinion_site_review_id_unique">
-            <unique-column name="site_review_id"/>
-        </unique>
+        <index name="idx_guaranteed_opinion_site_review_locale_date">
+            <index-column name="locale"/>
+            <index-column name="review_date"/>
+        </index>
     </table>
 
     <table name="guaranteed_opinion_product_rating" namespace="GuaranteedOpinion\Model">
         <column name="product_id" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="locale" type="VARCHAR" size="5" primaryKey="true" required="true"/>
         <column name="total" type="INTEGER" />
         <column name="average" type="VARCHAR" />
     </table>
 
-  <external-schema filename="local/config/schema.xml" referenceOnly="true" />
+    <external-schema filename="local/config/schema.xml" referenceOnly="true" />
 </database>

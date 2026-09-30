@@ -1,7 +1,8 @@
 {# GuaranteedOpinion — back-office configuration fragment (hook: module.configuration) #}
-{% for message in app.flashes('danger') %}
-    <div class="alert alert-danger mb-3" role="alert">{{ message }}</div>
-{% endfor %}
+<div class="d-flex justify-content-end mb-3">
+    {{ component('BoLanguageSwitcher', {currentLanguageId: edit_language_id}) }}
+</div>
+{# Error messages are shown by the back-office layout (bo_flashes()): `app` is not Symfony's AppVariable here. #}
 <div class="card mb-4">
     <div class="card-header">
         <h4 class="card-title mb-0">
@@ -10,6 +11,7 @@
     </div>
 
     {{ form_start(form, {action: path('module_GuaranteedOpinion_configuration'), method: 'POST', attr: {class: 'form-horizontal'}}) }}
+    <input type="hidden" name="edit_language_id" value="{{ edit_language_id }}">
 
     <div class="card-body">
         <div class="row">
@@ -24,12 +26,12 @@
 
                 <div class="mb-3">
                     <p>{{ 'Import Guaranteed Opinion Site Review : '|trans({}, 'guaranteedopinion.bo.default') }}</p>
-                    <p class="card p-2 bg-light text-monospace">php Thelia module:GuaranteedOpinion:GetSiteReview</p>
+                    <p class="card p-2 bg-light text-monospace">php bin/console module:GuaranteedOpinion:GetSiteReview --locale {{ edit_language_locale }}</p>
                 </div>
 
                 <div class="mb-3">
                     <p>{{ 'Import Guaranteed Opinion Product Review : '|trans({}, 'guaranteedopinion.bo.default') }}</p>
-                    <p class="card p-2 bg-light text-monospace">php Thelia module:GuaranteedOpinion:GetProductReview</p>
+                    <p class="card p-2 bg-light text-monospace">php bin/console module:GuaranteedOpinion:GetProductReview --locale {{ edit_language_locale }}</p>
                 </div>
 
                 <div class="mb-3">
@@ -50,7 +52,7 @@
 
                 <div class="mb-3">
                     <p>{{ 'Send Guaranteed Opinion Order : '|trans({}, 'guaranteedopinion.bo.default') }}</p>
-                    <p class="card p-2 bg-light text-monospace">php Thelia module:GuaranteedOpinion:SendOrder</p>
+                    <p class="card p-2 bg-light text-monospace">php bin/console module:GuaranteedOpinion:SendOrder --locale {{ edit_language_locale }}</p>
                 </div>
 
                 <div class="mb-3">
@@ -63,41 +65,7 @@
 
         <div class="row mt-3">
             <div class="col-md-6">
-                <h5>{{ 'Product reviews'|trans({}, 'guaranteedopinion.bo.default') }}</h5>
-
-                <div class="mb-3">
-                    {{ form_label(form.product_review_hook_display) }}
-                    {{ form_widget(form.product_review_hook_display, {attr: {class: 'form-control' ~ (form.product_review_hook_display.vars.errors|length ? ' is-invalid' : '')}}) }}
-                    {{ form_errors(form.product_review_hook_display) }}
-                </div>
-
-                <div class="mb-3 form-check">
-                    {{ form_widget(form.product_review_display, {attr: {class: 'form-check-input'}}) }}
-                    {{ form_label(form.product_review_display, null, {label_attr: {class: 'form-check-label'}}) }}
-                    {{ form_errors(form.product_review_display) }}
-                </div>
-
-                <div class="mb-3 form-check">
-                    {{ form_widget(form.product_review_tab_display, {attr: {class: 'form-check-input'}}) }}
-                    {{ form_label(form.product_review_tab_display, null, {label_attr: {class: 'form-check-label'}}) }}
-                    {{ form_errors(form.product_review_tab_display) }}
-                </div>
-            </div>
-
-            <div class="col-md-6">
                 <h5>{{ 'Site reviews'|trans({}, 'guaranteedopinion.bo.default') }}</h5>
-
-                <div class="mb-3">
-                    {{ form_label(form.site_review_hook_display) }}
-                    {{ form_widget(form.site_review_hook_display, {attr: {class: 'form-control' ~ (form.site_review_hook_display.vars.errors|length ? ' is-invalid' : '')}}) }}
-                    {{ form_errors(form.site_review_hook_display) }}
-                </div>
-
-                <div class="mb-3 form-check">
-                    {{ form_widget(form.site_review_display, {attr: {class: 'form-check-input'}}) }}
-                    {{ form_label(form.site_review_display, null, {label_attr: {class: 'form-check-label'}}) }}
-                    {{ form_errors(form.site_review_display) }}
-                </div>
 
                 <div class="mb-3">
                     {{ form_label(form.site_review_widget) }}

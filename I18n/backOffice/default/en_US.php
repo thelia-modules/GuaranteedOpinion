@@ -1,5 +1,6 @@
 <?php
 
-return array(
+declare(strict_types=1);
 
-);
+return [
+];

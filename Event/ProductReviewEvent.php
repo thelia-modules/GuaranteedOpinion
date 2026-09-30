@@ -1,54 +1,55 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the Thelia package.
+ * http://www.thelia.net
+ *
+ * (c) OpenStudio <info@thelia.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace GuaranteedOpinion\Event;
 
 use Thelia\Core\Event\ActionEvent;
 use Thelia\Model\Product;
 
+/**
+ * Lets a listener replace the product id sent to Guaranteed Reviews (by default the Thelia product id).
+ */
 class ProductReviewEvent extends ActionEvent
 {
     private ?Product $product;
 
-    private ?string $guaranteedOpinionProductId;
+    private string $guaranteedOpinionProductId;
 
-    public function __construct($product = null)
+    public function __construct(?Product $product = null)
     {
         $this->product = $product;
-        $this->guaranteedOpinionProductId = $product->getId();
+        $this->guaranteedOpinionProductId = (string) $product?->getId();
     }
 
-    /**
-     * @return Product|null
-     */
     public function getProduct(): ?Product
     {
         return $this->product;
     }
 
-    /**
-     * @param Product|null $product
-     * @return ProductReviewEvent
-     */
-    public function setProduct(?Product $product): ProductReviewEvent
+    public function setProduct(?Product $product): self
     {
         $this->product = $product;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getGuaranteedOpinionProductId(): string
     {
         return $this->guaranteedOpinionProductId;
     }
 
-    /**
-     * @param string $guaranteedOpinionProductId
-     * @return ProductReviewEvent
-     */
-    public function setGuaranteedOpinionProductId(string $guaranteedOpinionProductId): ProductReviewEvent
+    public function setGuaranteedOpinionProductId(string $guaranteedOpinionProductId): self
     {
         $this->guaranteedOpinionProductId = $guaranteedOpinionProductId;
 

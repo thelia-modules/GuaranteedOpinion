@@ -1,5 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the Thelia package.
+ * http://www.thelia.net
+ *
+ * (c) OpenStudio <info@thelia.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace GuaranteedOpinion\Service;
 
 use GuaranteedOpinion\GuaranteedOpinion;
@@ -7,49 +19,52 @@ use GuaranteedOpinion\Model\GuaranteedOpinionProductRating;
 use GuaranteedOpinion\Model\GuaranteedOpinionProductRatingQuery;
 use GuaranteedOpinion\Model\GuaranteedOpinionProductReview;
 use GuaranteedOpinion\Model\GuaranteedOpinionProductReviewQuery;
+use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\Exception\PropelException;
 
+/**
+ * Product reviews and ratings imported from the API, one language at a time: a review id may exist in several
+ * languages, each language has its own rating.
+ */
 class ProductReviewService
 {
-    public function addGuaranteedOpinionProductReviews(array $productReviews, int $productId): void
-    {
-        foreach ($productReviews as $productRow)
-        {
-            $this->addGuaranteedOpinionProductRow($productRow, $productId);
-        }
-    }
-
-    public function addGuaranteedOpinionProductRow($row, int $productId): bool
+    /**
+     * @param array<string, mixed> $row a review of the API: id, c (name), txt, date, r (rate), odate, reply, rdate
+     */
+    public function addGuaranteedOpinionProductRow(array $row, int $productId, string $locale): bool
     {
         try {
             $review = GuaranteedOpinionProductReviewQuery::create()
-                ->findOneByProductReviewId($row['id']);
+                ->filterByLocale($locale)
+                ->filterByProductReviewId((string) $row['id'])
+                ->findOne();
 
             if (null === $review) {
                 $review = new GuaranteedOpinionProductReview();
                 $review
-                    ->setProductReviewId($row['id'])
-                    ->setName($row['c'])
-                    ->setReview($row['txt'])
-                    ->setReviewDate($row['date'])
-                    ->setRate($row['r'])
-                    ->setOrderId($row['o'] ?? null)
-                    ->setOrderDate($row['odate'])
-                    ->setProductId($productId)
-                ;
+                    ->setProductReviewId((string) $row['id'])
+                    ->setLocale($locale)
+                    ->setName(ReviewText::nullable($row['c'] ?? null))
+                    ->setReview(ReviewText::nullable($row['txt'] ?? null))
+                    ->setReviewDate(ReviewText::nullable($row['date'] ?? null))
+                    ->setRate((string) ($row['r'] ?? '0'))
+                    ->setOrderDate(ReviewText::nullable($row['odate'] ?? null))
+                    ->setProductId($productId);
                 $review->save();
             }
 
-            if ($row['reply'] !== "" && $row['rdate'] !== "") {
+            $reply = ReviewText::nullable($row['reply'] ?? null);
+            $replyDate = ReviewText::nullable($row['rdate'] ?? null);
+
+            if (null !== $reply && null !== $replyDate) {
                 $review
-                    ->setReply($row['reply'])
-                    ->setReplyDate($row['rdate'])
-                ;
+                    ->setReply($reply)
+                    ->setReplyDate($replyDate);
                 $review->save();
             }
-
         } catch (PropelException $e) {
             GuaranteedOpinion::log($e->getMessage());
+
             return false;
         }
 
@@ -57,76 +72,49 @@ class ProductReviewService
     }
 
     /**
+     * Deletes the reviews of the product in this language that the API no longer returns. The other languages are
+     * left as they are: the API answers for the account of one language.
+     *
+     * @param iterable<array<string, mixed>> $apiReviews
+     *
      * @throws PropelException
      */
-    public function deleteReview(int $reviewId): void
+    public function removeDeletedReviews(int $productId, string $locale, iterable $apiReviews): int
     {
-        $reviewData = GuaranteedOpinionProductReviewQuery::create()->findOneByProductReviewId($reviewId);
+        $keptIds = [];
 
-        $reviewData?->delete();
+        foreach ($apiReviews as $apiReview) {
+            $keptIds[] = (string) $apiReview['id'];
+        }
+
+        $query = GuaranteedOpinionProductReviewQuery::create()
+            ->filterByProductId($productId)
+            ->filterByLocale($locale);
+
+        if ([] !== $keptIds) {
+            $query->filterByProductReviewId($keptIds, Criteria::NOT_IN);
+        }
+
+        return $query->delete();
     }
 
     /**
-     * @param string $xml
-     * @return array
-     */
-    public function xmlToArray(string $xml): array
-    {
-        $result = [];
-        $this->normalizeSimpleXML(simplexml_load_string($xml, null, LIBXML_NOCDATA), $result);
-        return $result;
-    }
-
-    protected function normalizeSimpleXML($obj, &$result): void
-    {
-        $data = $obj;
-        if (is_object($data)) {
-            $data = get_object_vars($data);
-        }
-        if (is_array($data)) {
-            foreach ($data as $key => $value) {
-                $res = null;
-                $this->normalizeSimpleXML($value, $res);
-                if (($key === '@attributes') && ($key)) {
-                    $result = $res;
-                } else {
-                    $result[$key] = $res;
-                }
-            }
-        } else {
-            $result = $data;
-        }
-    }
-
-    /**
+     * @param array<string, mixed> $ratings total and average of the API
+     *
      * @throws PropelException
      */
-    public function addGuaranteedOpinionProductRating(int $productId, array $ratings): void
+    public function addGuaranteedOpinionProductRating(int $productId, array $ratings, string $locale): void
     {
-        if (null === $productRating = GuaranteedOpinionProductRatingQuery::create()->findOneByProductId($productId)) {
-            $productRating = new GuaranteedOpinionProductRating();
-        }
+        $productRating = GuaranteedOpinionProductRatingQuery::create()
+            ->filterByProductId($productId)
+            ->filterByLocale($locale)
+            ->findOne() ?? new GuaranteedOpinionProductRating();
 
         $productRating
             ->setProductId($productId)
-            ->setTotal($ratings['total'])
-            ->setAverage($ratings['average'])
+            ->setLocale($locale)
+            ->setTotal((int) ($ratings['total'] ?? 0))
+            ->setAverage((string) ($ratings['average'] ?? '0'))
             ->save();
-    }
-
-    public function formatProductReviews($reviews): array
-    {
-        $tabReviews = [];
-
-        /** @var GuaranteedOpinionProductReview $review */
-        foreach ($reviews as $key => $review) {
-            $tabReviews[$key]['rate'] = $review->getRate();
-            $tabReviews[$key]['review_date'] = $review->getReviewDate();
-            $tabReviews[$key]['name'] = $review->getName();
-            $tabReviews[$key]['order_date'] = $review->getOrderDate();
-            $tabReviews[$key]['review'] = $review->getReview();
-        }
-
-        return $tabReviews;
     }
 }
