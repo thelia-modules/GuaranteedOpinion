@@ -272,7 +272,7 @@ final class UpdateScriptTest extends TestCase
      */
     private function column(string $table, string $column): array
     {
-        $statement = $this->pdo->prepare('SELECT LOWER(`data_type`) AS `data_type`, `is_nullable` FROM information_schema.columns WHERE `table_schema` = DATABASE() AND `table_name` = ? AND `column_name` = ?');
+        $statement = $this->pdo->prepare('SELECT LOWER(`data_type`) AS `data_type`, `is_nullable` AS `is_nullable` FROM information_schema.columns WHERE `table_schema` = DATABASE() AND `table_name` = ? AND `column_name` = ?');
         $statement->execute([$table, $column]);
         $row = $statement->fetch(\PDO::FETCH_ASSOC);
         self::assertIsArray($row, $table.'.'.$column.' is missing');
